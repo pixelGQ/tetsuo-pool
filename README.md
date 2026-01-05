@@ -12,14 +12,6 @@ Public PPLNS mining pool for TETSUO cryptocurrency.
 - Real-time statistics and hashrate charts
 - Worker management and monitoring
 
-## Tech Stack
-
-- **Frontend:** Next.js 14 (App Router)
-- **Database:** PostgreSQL + Prisma ORM
-- **Cache:** Redis
-- **Stratum Server:** ckpool (patched for TETSUO)
-- **Process Manager:** PM2
-
 ## TETSUO Blockchain
 
 | Parameter | Value |
@@ -37,11 +29,42 @@ Public PPLNS mining pool for TETSUO cryptocurrency.
 | Min Payout | 100 TETSUO |
 | Block Maturity | 100 confirmations |
 
+## Mining
+
+Connect your SHA-256 miner to:
+
+```
+stratum+tcp://tetsuo.ink:3333
+```
+
+**Username:** Your TETSUO wallet address (e.g., `TYourWalletAddress`)
+**Password:** `x` (any value)
+
+Worker names supported: `TYourWalletAddress.rig1`
+
+## API Endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /api/pool/stats` | Pool statistics |
+| `GET /api/pool/hashrate-history` | 24h hashrate data |
+| `GET /api/miner/[address]` | Miner statistics |
+| `GET /api/blocks` | Recent blocks |
+| `GET /api/payouts` | Recent payouts |
+
 ---
 
-## Installation Guide
+# Installation Guide
 
-### Prerequisites
+## Tech Stack
+
+- **Frontend:** Next.js 14 (App Router)
+- **Database:** PostgreSQL + Prisma ORM
+- **Cache:** Redis
+- **Stratum Server:** ckpool (patched for TETSUO)
+- **Process Manager:** PM2
+
+## Prerequisites
 
 - **OS:** Ubuntu 22.04+ / Debian 12+
 - **Node.js:** 20.x or higher
@@ -49,20 +72,20 @@ Public PPLNS mining pool for TETSUO cryptocurrency.
 - **Redis:** 6+
 - **TETSUO Daemon:** Full node with RPC enabled
 
-### 1. Clone Repository
+## 1. Clone Repository
 
 ```bash
 git clone https://github.com/pixelGQ/tetsuo-pool.git
 cd tetsuo-pool
 ```
 
-### 2. Install Dependencies
+## 2. Install Dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Setup PostgreSQL
+## 3. Setup PostgreSQL
 
 ```bash
 # Install PostgreSQL
@@ -79,7 +102,7 @@ GRANT ALL PRIVILEGES ON DATABASE tetsuo_pool TO pooluser;
 \q
 ```
 
-### 4. Setup Redis
+## 4. Setup Redis
 
 ```bash
 # Install Redis
@@ -95,7 +118,7 @@ sudo nano /etc/redis/redis.conf
 sudo systemctl restart redis-server
 ```
 
-### 5. Setup TETSUO Daemon
+## 5. Setup TETSUO Daemon
 
 Install and configure the TETSUO full node:
 
@@ -135,7 +158,7 @@ tetsuo-cli -rpcwallet=pool getnewaddress
 # Save this address as POOL_WALLET_ADDRESS
 ```
 
-### 6. Setup ckpool (Stratum Server)
+## 6. Setup ckpool (Stratum Server)
 
 ckpool requires patches to work with TETSUO:
 
@@ -211,7 +234,7 @@ sudo systemctl enable ckpool
 sudo systemctl start ckpool
 ```
 
-### 7. Configure Environment
+## 7. Configure Environment
 
 ```bash
 cp .env.example .env
@@ -243,7 +266,7 @@ POOL_WALLET_ADDRESS=TYourPoolWalletAddress
 CKPOOL_LOG_PATH=/var/log/ckpool/ckpool.log
 ```
 
-### 8. Initialize Database
+## 8. Initialize Database
 
 ```bash
 # Generate Prisma client
@@ -253,7 +276,7 @@ npm run db:generate
 npm run db:push
 ```
 
-### 9. Build and Run
+## 9. Build and Run
 
 **Development:**
 
@@ -310,7 +333,7 @@ module.exports = {
 };
 ```
 
-### 10. Nginx Reverse Proxy (Optional)
+## 10. Nginx Reverse Proxy (Optional)
 
 ```bash
 sudo apt install nginx certbot python3-certbot-nginx
@@ -380,33 +403,6 @@ tetsuo-pool/
 | **BlockWatcher** | Monitors blockchain for new blocks and confirmations |
 | **PPLNSCalculator** | Calculates miner rewards using PPLNS algorithm |
 | **PayoutWorker** | Processes and sends payouts to miners |
-
----
-
-## Mining
-
-Connect your SHA-256 miner to:
-
-```
-stratum+tcp://tetsuo.ink:3333
-```
-
-**Username:** Your TETSUO wallet address (e.g., `TYourWalletAddress`)
-**Password:** `x` (any value)
-
-Worker names supported: `TYourWalletAddress.rig1`
-
----
-
-## API Endpoints
-
-| Endpoint | Description |
-|----------|-------------|
-| `GET /api/pool/stats` | Pool statistics |
-| `GET /api/pool/hashrate-history` | 24h hashrate data |
-| `GET /api/miner/[address]` | Miner statistics |
-| `GET /api/blocks` | Recent blocks |
-| `GET /api/payouts` | Recent payouts |
 
 ---
 
