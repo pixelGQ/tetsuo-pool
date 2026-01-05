@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 
 interface MinerStats {
   address: string;
@@ -28,21 +29,23 @@ function formatTetsuo(satoshis: string): string {
   return (Number(satoshis) / 100_000_000).toFixed(8);
 }
 
-export default function DashboardPage() {
+function DashboardContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [address, setAddress] = useState("");
   const [stats, setStats] = useState<MinerStats | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const lookupMiner = async () => {
-    if (!address.trim()) return;
+  const lookupMiner = useCallback(async (addr: string) => {
+    if (!addr.trim()) return;
 
     setLoading(true);
     setError("");
     setStats(null);
 
     try {
-      const res = await fetch(`/api/miner/${address}`);
+      const res = await fetch(`/api/miner/${addr}`);
       if (!res.ok) {
         if (res.status === 404) {
           setError("Miner not found. Start mining to see your stats here!");
@@ -53,12 +56,23 @@ export default function DashboardPage() {
       }
       const data = await res.json();
       setStats(data);
+      // Update URL with address
+      router.push(`/dashboard?address=${addr}`, { scroll: false });
     } catch (err) {
       setError("Failed to fetch miner stats");
     } finally {
       setLoading(false);
     }
-  };
+  }, [router]);
+
+  // Auto-load miner from URL parameter
+  useEffect(() => {
+    const urlAddress = searchParams.get("address");
+    if (urlAddress && urlAddress !== address) {
+      setAddress(urlAddress);
+      lookupMiner(urlAddress);
+    }
+  }, [searchParams]);
 
   return (
     <div className="space-y-4 md:space-y-6">
@@ -73,10 +87,10 @@ export default function DashboardPage() {
             onChange={(e) => setAddress(e.target.value)}
             placeholder="Enter your TETSUO address"
             className="flex-1 px-3 md:px-4 py-2 bg-[--bg-secondary] border-2 border-[--border] focus:outline-none text-sm md:text-base font-bold"
-            onKeyDown={(e) => e.key === "Enter" && lookupMiner()}
+            onKeyDown={(e) => e.key === "Enter" && lookupMiner(address)}
           />
           <button
-            onClick={lookupMiner}
+            onClick={() => lookupMiner(address)}
             disabled={loading}
             className="manga-btn px-4 md:px-6 py-2 disabled:opacity-50 text-sm md:text-base"
           >
@@ -207,5 +221,13 @@ export default function DashboardPage() {
         </>
       )}
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={<div className="text-center py-8">Loading...</div>}>
+      <DashboardContent />
+    </Suspense>
   );
 }

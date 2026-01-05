@@ -1,5 +1,6 @@
 import { prisma } from "@tetsuo-pool/database";
 import { formatTetsuo } from "@tetsuo-pool/shared";
+import { AddressLink } from "../components/AddressLink";
 
 // Force dynamic rendering - don't cache this page
 export const dynamic = "force-dynamic";
@@ -67,8 +68,8 @@ export default async function BlocksPage({
                   </a>
                 </td>
                 <td className="px-3 md:px-4 py-2 md:py-3 whitespace-nowrap font-bold">{formatTetsuo(block.reward)}</td>
-                <td className="px-3 md:px-4 py-2 md:py-3 font-mono text-xs hidden md:table-cell">
-                  {block.foundByUser?.address.slice(0, 12)}...
+                <td className="px-3 md:px-4 py-2 md:py-3 hidden md:table-cell">
+                  {block.foundByUser && <AddressLink address={block.foundByUser.address} />}
                 </td>
                 <td className="px-3 md:px-4 py-2 md:py-3 hidden md:table-cell font-bold">{block._count.rewards}</td>
                 <td className="px-3 md:px-4 py-2 md:py-3 font-bold">{block.confirmations}</td>

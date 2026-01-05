@@ -1,5 +1,6 @@
 import { prisma } from "@tetsuo-pool/database";
 import { formatHashrate, formatTetsuo } from "@tetsuo-pool/shared";
+import { AddressLink } from "../components/AddressLink";
 
 // Force dynamic rendering - don't cache this page
 export const dynamic = "force-dynamic";
@@ -137,8 +138,8 @@ export default async function StatsPage() {
                   <td className="py-2 px-3 font-mono text-xs">
                     {block.hash.slice(0, 10)}...
                   </td>
-                  <td className="py-2 px-3 hidden md:table-cell font-mono text-xs">
-                    {block.foundByUser?.address.slice(0, 12)}...
+                  <td className="py-2 px-3 hidden md:table-cell">
+                    {block.foundByUser && <AddressLink address={block.foundByUser.address} />}
                   </td>
                   <td className="py-2 px-3 whitespace-nowrap font-bold">{formatTetsuo(block.reward)}</td>
                   <td className="py-2 px-3">
@@ -188,7 +189,9 @@ export default async function StatsPage() {
               {stats.topMiners.map((miner, i) => (
                 <tr key={miner.address}>
                   <td className="py-2 px-3 font-black">{i + 1}</td>
-                  <td className="py-2 px-3 font-mono text-xs">{miner.address.slice(0, 12)}...</td>
+                  <td className="py-2 px-3">
+                    <AddressLink address={miner.address} />
+                  </td>
                   <td className="py-2 px-3 whitespace-nowrap font-bold">{formatTetsuo(miner.pendingBalance)}</td>
                   <td className="py-2 px-3 whitespace-nowrap font-bold hidden md:table-cell">{formatTetsuo(miner.paidBalance)}</td>
                 </tr>
