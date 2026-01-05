@@ -19,7 +19,8 @@ export default function RootLayout({
         <nav className="manga-nav">
           <div className="max-w-7xl mx-auto px-4 py-4">
             <div className="flex justify-between items-center">
-              <a href="/" className="text-xl md:text-2xl font-black tracking-tight uppercase">
+              <a href="/" className="flex items-center gap-2 text-xl md:text-2xl font-black tracking-tight uppercase">
+                <img src="/icon.png" alt="TETSUO" className="w-8 h-8 md:w-10 md:h-10 rounded-lg" />
                 TETSUO Pool
               </a>
               {/* Desktop menu */}
