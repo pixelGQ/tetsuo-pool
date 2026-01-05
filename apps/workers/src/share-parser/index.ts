@@ -123,6 +123,11 @@ async function processSharelogFile(filePath: string): Promise<number> {
           continue;
         }
 
+        // Skip invalid TETSUO addresses (must start with 'T' and be ~34 chars)
+        if (!share.username.startsWith("T") || share.username.length < 30) {
+          continue;
+        }
+
         const { user, worker } = await getOrCreateWorker(share);
         const submittedAt = parseCreateDate(share.createdate);
 
