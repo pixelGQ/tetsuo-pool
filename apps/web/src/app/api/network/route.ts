@@ -1,6 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createTetsuoRpc } from "@tetsuo-pool/tetsuo-rpc";
 import { POOL_CONFIG } from "@tetsuo-pool/shared";
+import { checkRateLimit, RATE_LIMITS } from "@/lib/rate-limit";
 
 // Disable caching for this route
 export const dynamic = "force-dynamic";
@@ -8,7 +9,10 @@ export const revalidate = 0;
 
 const rpc = createTetsuoRpc();
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Rate limiting
+  const rateLimited = await checkRateLimit(request, RATE_LIMITS.default);
+  if (rateLimited) return rateLimited;
   try {
     const [blockchainInfo, networkHashrate] = await Promise.all([
       rpc.getBlockchainInfo(),

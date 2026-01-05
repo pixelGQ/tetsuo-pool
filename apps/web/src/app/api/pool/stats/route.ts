@@ -1,8 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@tetsuo-pool/database";
 import { POOL_CONFIG } from "@tetsuo-pool/shared";
+import { checkRateLimit, RATE_LIMITS } from "@/lib/rate-limit";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Rate limiting
+  const rateLimited = await checkRateLimit(request, RATE_LIMITS.stats);
+  if (rateLimited) return rateLimited;
   try {
     const now = new Date();
     const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);

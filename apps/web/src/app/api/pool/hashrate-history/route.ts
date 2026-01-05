@@ -1,5 +1,6 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@tetsuo-pool/database";
+import { checkRateLimit, RATE_LIMITS } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -9,7 +10,10 @@ interface HourlyData {
   shares: number;
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Rate limiting
+  const rateLimited = await checkRateLimit(request, RATE_LIMITS.default);
+  if (rateLimited) return rateLimited;
   try {
     const now = new Date();
     const data: HourlyData[] = [];

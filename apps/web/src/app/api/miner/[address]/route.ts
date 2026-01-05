@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@tetsuo-pool/database";
+import { checkRateLimit, RATE_LIMITS } from "@/lib/rate-limit";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ address: string }> }
 ) {
+  // Rate limiting - stricter for miner lookup
+  const rateLimited = await checkRateLimit(request, RATE_LIMITS.miner);
+  if (rateLimited) return rateLimited;
+
   try {
     const { address } = await params;
 
