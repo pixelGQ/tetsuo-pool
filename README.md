@@ -12,6 +12,17 @@ Public PPLNS mining pool for TETSUO cryptocurrency.
 - Real-time statistics and hashrate charts
 - Worker management and monitoring
 
+---
+
+## TETSUO Ecosystem
+
+| Component | Description | Repository |
+|-----------|-------------|------------|
+| **TETSUO Core** | Blockchain daemon (tetsuod, tetsuo-cli) | [fullchain](https://github.com/Pavelevich/fullchain) |
+| **TETSUO Node** | Easy node installation scripts | [tetsuonode](https://github.com/Pavelevich/tetsuonode) |
+| **TETSUO Wallet** | CLI wallet for miners | [tetsuonpmwallet](https://github.com/Pavelevich/tetsuonpmwallet) |
+| **TETSUO Pool** | Mining pool software (this repo) | [tetsuo-pool](https://github.com/pixelGQ/tetsuo-pool) |
+
 ## TETSUO Blockchain
 
 | Parameter | Value |
@@ -19,8 +30,37 @@ Public PPLNS mining pool for TETSUO cryptocurrency.
 | Algorithm | SHA-256 |
 | Block Time | 60 seconds |
 | Block Reward | 10,000 TETSUO |
+| Max Supply | 21 billion |
+| Difficulty Retarget | Every 2016 blocks |
 
-## Pool Configuration
+---
+
+## For Miners
+
+### Get a Wallet
+
+Install TETSUO Wallet CLI:
+
+```bash
+npm install -g tetsuo-blockchain-wallet
+tetsuo
+```
+
+Or build from source: [tetsuonpmwallet](https://github.com/Pavelevich/tetsuonpmwallet)
+
+### Connect to Pool
+
+Configure your SHA-256 miner:
+
+```
+Pool URL:  stratum+tcp://tetsuo.ink:3333
+Username:  YOUR_TETSUO_ADDRESS
+Password:  x
+```
+
+**Example:** `TYourWalletAddress.rig1` (worker name is optional)
+
+### Pool Configuration
 
 | Setting | Value |
 |---------|-------|
@@ -29,186 +69,209 @@ Public PPLNS mining pool for TETSUO cryptocurrency.
 | Min Payout | 100 TETSUO |
 | Block Maturity | 100 confirmations |
 
-## Mining
-
-Connect your SHA-256 miner to:
-
-```
-stratum+tcp://tetsuo.ink:3333
-```
-
-**Username:** Your TETSUO wallet address (e.g., `TYourWalletAddress`)
-**Password:** `x` (any value)
-
-Worker names supported: `TYourWalletAddress.rig1`
+---
 
 ## API Endpoints
 
 | Endpoint | Description |
 |----------|-------------|
 | `GET /api/pool/stats` | Pool statistics |
-| `GET /api/pool/hashrate-history` | 24h hashrate data |
-| `GET /api/miner/[address]` | Miner statistics |
-| `GET /api/blocks` | Recent blocks |
-| `GET /api/payouts` | Recent payouts |
+| `GET /api/pool/hashrate-history` | 24h hashrate chart data |
+| `GET /api/miner/{address}` | Miner statistics |
+| `GET /api/network` | Network info (difficulty, hashrate) |
 
 ---
 
-# Installation Guide
+# Installation Guide (Pool Operators)
 
-## Tech Stack
+This guide explains how to set up your own TETSUO mining pool.
 
-- **Frontend:** Next.js 14 (App Router)
-- **Database:** PostgreSQL + Prisma ORM
-- **Cache:** Redis
-- **Stratum Server:** ckpool (patched for TETSUO)
-- **Process Manager:** PM2
+## Architecture
+
+```
+┌──────────────┐     ┌─────────────┐     ┌──────────────┐
+│   Miners     │────▶│   ckpool    │────▶│   tetsuod    │
+│ (SHA-256)    │:3333│  (Stratum)  │ RPC │ (Blockchain) │
+└──────────────┘     └─────────────┘     └──────────────┘
+                            │
+                            ▼ logs
+                     ┌─────────────┐
+                     │  Workers    │
+                     │ (Node.js)   │
+                     └─────────────┘
+                            │
+              ┌─────────────┼─────────────┐
+              ▼             ▼             ▼
+       ┌───────────┐ ┌───────────┐ ┌───────────┐
+       │ PostgreSQL│ │   Redis   │ │  Next.js  │
+       │   (DB)    │ │  (Cache)  │ │   (Web)   │
+       └───────────┘ └───────────┘ └───────────┘
+```
 
 ## Prerequisites
 
 - **OS:** Ubuntu 22.04+ / Debian 12+
+- **RAM:** 4GB minimum, 8GB recommended
+- **Storage:** 20GB+ SSD
 - **Node.js:** 20.x or higher
 - **PostgreSQL:** 14+
 - **Redis:** 6+
-- **TETSUO Daemon:** Full node with RPC enabled
 
-## 1. Clone Repository
-
-```bash
-git clone https://github.com/pixelGQ/tetsuo-pool.git
-cd tetsuo-pool
-```
-
-## 2. Install Dependencies
+## Step 1: Install System Dependencies
 
 ```bash
-npm install
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y build-essential cmake git curl wget \
+    autoconf automake libtool libzmq3-dev pkg-config \
+    postgresql postgresql-contrib redis-server nginx certbot python3-certbot-nginx
 ```
 
-## 3. Setup PostgreSQL
+## Step 2: Install Node.js
 
 ```bash
-# Install PostgreSQL
-sudo apt install postgresql postgresql-contrib
-
-# Create database and user
-sudo -u postgres psql
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
 ```
 
-```sql
-CREATE USER pooluser WITH PASSWORD 'your_secure_password';
-CREATE DATABASE tetsuo_pool OWNER pooluser;
-GRANT ALL PRIVILEGES ON DATABASE tetsuo_pool TO pooluser;
-\q
-```
+## Step 3: Build TETSUO Core
 
-## 4. Setup Redis
+Clone and build the TETSUO blockchain daemon:
 
 ```bash
-# Install Redis
-sudo apt install redis-server
-
-# Enable persistence (recommended)
-sudo nano /etc/redis/redis.conf
-# Set: appendonly yes
-
-# Set password (optional but recommended)
-# Set: requirepass your_redis_password
-
-sudo systemctl restart redis-server
+git clone https://github.com/Pavelevich/fullchain.git /opt/fullchain
+cd /opt/fullchain/tetsuo-core
+mkdir build && cd build
+cmake ..
+cmake --build . --config Release -j$(nproc)
 ```
 
-## 5. Setup TETSUO Daemon
+This creates:
+- `tetsuod` - blockchain daemon
+- `tetsuo-cli` - command-line interface
+- `tetsuo-wallet` - wallet management
 
-Install and configure the TETSUO full node:
+### Configure TETSUO Daemon
 
 ```bash
-# Create config directory
 mkdir -p ~/.tetsuo
-
-# Create configuration file
 nano ~/.tetsuo/tetsuo.conf
 ```
 
 ```ini
-# ~/.tetsuo/tetsuo.conf
+# Server
 server=1
 daemon=1
 txindex=1
 
-# RPC Settings
+# RPC
 rpcuser=your_rpc_user
-rpcpassword=your_rpc_password
-rpcport=8337
+rpcpassword=your_secure_rpc_password
 rpcallowip=127.0.0.1
+rpcport=8337
 
 # Network
-port=8338
 listen=1
+port=8338
+maxconnections=125
 
-# Wallet for pool payouts
+# Performance
+dbcache=450
+
+# Pool wallet
 wallet=pool
 ```
 
-Create the pool wallet:
+### Create Pool Wallet
 
 ```bash
-tetsuo-cli createwallet "pool"
-tetsuo-cli -rpcwallet=pool getnewaddress
-# Save this address as POOL_WALLET_ADDRESS
+# Start daemon
+/opt/fullchain/tetsuo-core/build/bin/tetsuod -daemon -conf=$HOME/.tetsuo/tetsuo.conf
+
+# Wait for sync, then create wallet
+/opt/fullchain/tetsuo-core/build/bin/tetsuo-cli -conf=$HOME/.tetsuo/tetsuo.conf createwallet "pool"
+/opt/fullchain/tetsuo-core/build/bin/tetsuo-cli -conf=$HOME/.tetsuo/tetsuo.conf -rpcwallet=pool getnewaddress
+# Save this address - it's your POOL_WALLET_ADDRESS
 ```
 
-## 6. Setup ckpool (Stratum Server)
-
-ckpool requires patches to work with TETSUO:
+### Create Systemd Service
 
 ```bash
-# Install dependencies
-sudo apt install build-essential autoconf automake libtool libzmq3-dev
+sudo nano /etc/systemd/system/tetsuod.service
+```
 
-# Clone and build ckpool
+```ini
+[Unit]
+Description=TETSUO Core Daemon
+After=network.target
+
+[Service]
+Type=forking
+User=root
+ExecStart=/opt/fullchain/tetsuo-core/build/bin/tetsuod -daemon -conf=/root/.tetsuo/tetsuo.conf -datadir=/root/.tetsuo
+ExecStop=/opt/fullchain/tetsuo-core/build/bin/tetsuo-cli -conf=/root/.tetsuo/tetsuo.conf stop
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```bash
+sudo systemctl enable tetsuod
+sudo systemctl start tetsuod
+```
+
+## Step 4: Build ckpool (Stratum Server)
+
+ckpool requires patches for TETSUO compatibility:
+
+```bash
 git clone https://bitbucket.org/ckolivas/ckpool.git /opt/ckpool
 cd /opt/ckpool
 ./autogen.sh
 ./configure
-make
 ```
 
-**Required Patches:**
+### Apply TETSUO Patches
 
 Edit `/opt/ckpool/src/bitcoin.c`:
 
-1. **coinbaseaux.flags** - Make it optional (TETSUO returns empty `coinbaseaux: {}`):
-   - Find the code that requires `coinbaseaux.flags` and make it optional
+1. **coinbaseaux.flags** - Make optional (TETSUO returns empty `coinbaseaux: {}`)
+2. **Address validation** - Add 'T' prefix support for TETSUO addresses
 
-2. **Address validation** - Add 'T' prefix support:
-   - Find address validation and add 'T' to allowed prefixes
-
-Create ckpool config:
+Then build:
 
 ```bash
-sudo mkdir -p /etc/ckpool
+make
+```
+
+### Configure ckpool
+
+```bash
+sudo mkdir -p /etc/ckpool /var/log/ckpool
 sudo nano /etc/ckpool/ckpool.conf
 ```
 
 ```json
 {
     "btcd": [{
-        "url": "127.0.0.1:8337",
-        "auth": "rpc_user",
-        "pass": "rpc_password",
-        "notify": true
+        "url": "localhost:8337",
+        "auth": "your_rpc_user",
+        "pass": "your_rpc_password"
     }],
     "btcaddress": "YOUR_POOL_WALLET_ADDRESS",
+    "btcsig": "Your Pool Name",
+    "blockpoll": 100,
+    "update_interval": 30,
     "serverurl": ["0.0.0.0:3333"],
     "mindiff": 1,
-    "startdiff": 64,
+    "startdiff": 500000,
     "maxdiff": 0,
     "logdir": "/var/log/ckpool"
 }
 ```
 
-Create systemd service:
+### Create ckpool Service
 
 ```bash
 sudo nano /etc/systemd/system/ckpool.service
@@ -217,13 +280,14 @@ sudo nano /etc/systemd/system/ckpool.service
 ```ini
 [Unit]
 Description=ckpool Stratum Server
-After=network.target
+After=network.target tetsuod.service
+Requires=tetsuod.service
 
 [Service]
 Type=simple
-ExecStart=/opt/ckpool/src/ckpool -c /etc/ckpool/ckpool.conf
-Restart=always
-User=root
+ExecStart=/opt/ckpool/src/ckpool -c /etc/ckpool/ckpool.conf -L
+Restart=on-failure
+RestartSec=10
 
 [Install]
 WantedBy=multi-user.target
@@ -234,7 +298,44 @@ sudo systemctl enable ckpool
 sudo systemctl start ckpool
 ```
 
-## 7. Configure Environment
+## Step 5: Setup PostgreSQL
+
+```bash
+sudo -u postgres psql
+```
+
+```sql
+CREATE USER pooluser WITH PASSWORD 'your_secure_db_password';
+CREATE DATABASE tetsuo_pool OWNER pooluser;
+GRANT ALL PRIVILEGES ON DATABASE tetsuo_pool TO pooluser;
+\q
+```
+
+## Step 6: Setup Redis
+
+```bash
+sudo nano /etc/redis/redis.conf
+```
+
+Set:
+```ini
+appendonly yes
+requirepass your_redis_password
+```
+
+```bash
+sudo systemctl restart redis-server
+```
+
+## Step 7: Install Pool Software
+
+```bash
+git clone https://github.com/pixelGQ/tetsuo-pool.git /var/www/tetsuo-pool
+cd /var/www/tetsuo-pool
+npm install
+```
+
+### Configure Environment
 
 ```bash
 cp .env.example .env
@@ -243,10 +344,10 @@ nano .env
 
 ```env
 # Database
-DATABASE_URL=postgresql://pooluser:your_password@localhost:5432/tetsuo_pool
+DATABASE_URL=postgresql://pooluser:your_db_password@localhost:5432/tetsuo_pool
 
 # Redis
-REDIS_URL=redis://:redis_password@localhost:6379
+REDIS_URL=redis://:your_redis_password@localhost:6379
 
 # TETSUO RPC
 TETSUO_RPC_HOST=127.0.0.1
@@ -263,32 +364,23 @@ BLOCK_MATURITY_CONFIRMATIONS=100
 POOL_WALLET_ADDRESS=TYourPoolWalletAddress
 
 # ckpool
+CKPOOL_LOG_DIR=/var/log/ckpool
 CKPOOL_LOG_PATH=/var/log/ckpool/ckpool.log
+
+# Worker intervals (ms)
+BLOCK_POLL_INTERVAL=5000
+PPLNS_POLL_INTERVAL=30000
+PAYOUT_INTERVAL=180000
 ```
 
-## 8. Initialize Database
+### Initialize Database
 
 ```bash
-# Generate Prisma client
 npm run db:generate
-
-# Push schema to database
 npm run db:push
 ```
 
-## 9. Build and Run
-
-**Development:**
-
-```bash
-# Terminal 1: Web server
-npm run dev
-
-# Terminal 2: Workers
-npm run workers:dev
-```
-
-**Production (PM2):**
+## Step 8: Setup PM2
 
 ```bash
 npm install -g pm2
@@ -296,48 +388,16 @@ npm install -g pm2
 # Build web app
 npm run build --workspace=apps/web
 
-# Create PM2 ecosystem config (see example below)
-# Then start services:
-pm2 start ecosystem.config.js
+# Start services
+pm2 start apps/web/ecosystem.config.js
+pm2 start apps/workers/ecosystem.config.js
 pm2 save
 pm2 startup
 ```
 
-Example `ecosystem.config.js`:
-
-```javascript
-module.exports = {
-  apps: [
-    {
-      name: 'tetsuo-pool-web',
-      cwd: './apps/web',
-      script: 'npm',
-      args: 'start',
-      env: {
-        NODE_ENV: 'production',
-        PORT: 3000,
-        // Add all env vars here
-      }
-    },
-    {
-      name: 'tetsuo-pool-workers',
-      cwd: './apps/workers',
-      script: 'npx',
-      args: 'tsx src/index.ts --all',
-      env: {
-        NODE_ENV: 'production',
-        // Add all env vars here
-      }
-    }
-  ]
-};
-```
-
-## 10. Nginx Reverse Proxy (Optional)
+## Step 9: Setup Nginx + SSL
 
 ```bash
-sudo apt install nginx certbot python3-certbot-nginx
-
 sudo nano /etc/nginx/sites-available/tetsuo-pool
 ```
 
@@ -353,6 +413,8 @@ server {
         proxy_set_header Connection 'upgrade';
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
         proxy_cache_bypass $http_upgrade;
     }
 }
@@ -363,8 +425,17 @@ sudo ln -s /etc/nginx/sites-available/tetsuo-pool /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl reload nginx
 
-# SSL with Let's Encrypt
+# SSL
 sudo certbot --nginx -d your-domain.com
+```
+
+## Step 10: Open Firewall Ports
+
+```bash
+sudo ufw allow 80/tcp    # HTTP
+sudo ufw allow 443/tcp   # HTTPS
+sudo ufw allow 3333/tcp  # Stratum
+sudo ufw allow 8338/tcp  # TETSUO P2P
 ```
 
 ---
@@ -378,21 +449,20 @@ tetsuo-pool/
 │   │   ├── src/app/
 │   │   │   ├── api/            # API routes
 │   │   │   ├── components/     # React components
-│   │   │   ├── miner/          # Miner dashboard
 │   │   │   └── page.tsx        # Homepage
-│   │   └── package.json
+│   │   └── ecosystem.config.js
 │   └── workers/                # Background services
-│       └── src/
-│           ├── share-parser/   # Parse ckpool logs → shares
-│           ├── block-watcher/  # Monitor new blocks
-│           ├── pplns-calculator/ # Calculate rewards
-│           └── payout-worker/  # Process payouts
+│       ├── src/
+│       │   ├── share-parser/   # Parse ckpool logs → DB
+│       │   ├── block-watcher/  # Monitor blockchain
+│       │   ├── pplns-calculator/ # Calculate rewards
+│       │   └── payout-worker/  # Send payouts
+│       └── ecosystem.config.js
 ├── packages/
-│   ├── database/               # Prisma schema & client
-│   ├── tetsuo-rpc/             # TETSUO RPC client library
-│   └── shared/                 # Common utilities & config
-├── .env.example
-└── package.json
+│   ├── database/               # Prisma schema
+│   ├── tetsuo-rpc/             # RPC client
+│   └── shared/                 # Common utilities
+└── README.md
 ```
 
 ## Workers
