@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { MobileNav } from "./components/MobileNav";
 
 export const metadata: Metadata = {
   title: "TETSUO Mining Pool",
@@ -20,7 +21,8 @@ export default function RootLayout({
               <a href="/" className="text-xl font-bold text-white">
                 TETSUO Pool
               </a>
-              <div className="flex gap-6">
+              {/* Desktop menu */}
+              <div className="hidden md:flex gap-6">
                 <a href="/" className="text-gray-300 hover:text-white">
                   Home
                 </a>
@@ -37,10 +39,12 @@ export default function RootLayout({
                   Dashboard
                 </a>
               </div>
+              {/* Mobile menu button */}
+              <MobileNav />
             </div>
           </div>
         </nav>
-        <main className="max-w-7xl mx-auto px-4 py-8">{children}</main>
+        <main className="max-w-7xl mx-auto px-4 py-6 md:py-8">{children}</main>
       </body>
     </html>
   );

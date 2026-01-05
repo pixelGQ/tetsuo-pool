@@ -62,35 +62,35 @@ export default async function HomePage() {
   const stats = await getPoolStats();
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 md:space-y-8">
       <div className="text-center">
-        <h1 className="text-4xl font-bold mb-2">TETSUO Mining Pool</h1>
-        <p className="text-gray-400">
+        <h1 className="text-2xl md:text-4xl font-bold mb-2">TETSUO Mining Pool</h1>
+        <p className="text-gray-400 text-sm md:text-base">
           Public PPLNS mining pool with {stats.poolFee}% fee
         </p>
       </div>
 
       {/* Pool Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <div className="bg-gray-800 rounded-lg p-6">
-          <div className="text-gray-400 text-sm">Pool Hashrate</div>
-          <div className="text-2xl font-bold">{formatHashrate(stats.hashrate)}</div>
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
+        <div className="bg-gray-800 rounded-lg p-4 md:p-6">
+          <div className="text-gray-400 text-xs md:text-sm">Pool Hashrate</div>
+          <div className="text-lg md:text-2xl font-bold">{formatHashrate(stats.hashrate)}</div>
         </div>
-        <div className="bg-gray-800 rounded-lg p-6">
-          <div className="text-gray-400 text-sm">Active Miners</div>
-          <div className="text-2xl font-bold">{stats.miners}</div>
+        <div className="bg-gray-800 rounded-lg p-4 md:p-6">
+          <div className="text-gray-400 text-xs md:text-sm">Active Miners</div>
+          <div className="text-lg md:text-2xl font-bold">{stats.miners}</div>
         </div>
-        <div className="bg-gray-800 rounded-lg p-6">
-          <div className="text-gray-400 text-sm">Online Workers</div>
-          <div className="text-2xl font-bold">{stats.workers}</div>
+        <div className="bg-gray-800 rounded-lg p-4 md:p-6">
+          <div className="text-gray-400 text-xs md:text-sm">Online Workers</div>
+          <div className="text-lg md:text-2xl font-bold">{stats.workers}</div>
         </div>
-        <div className="bg-gray-800 rounded-lg p-6">
-          <div className="text-gray-400 text-sm">Blocks Found</div>
-          <div className="text-2xl font-bold">{stats.blocks}</div>
+        <div className="bg-gray-800 rounded-lg p-4 md:p-6">
+          <div className="text-gray-400 text-xs md:text-sm">Blocks Found</div>
+          <div className="text-lg md:text-2xl font-bold">{stats.blocks}</div>
         </div>
-        <div className="bg-gray-800 rounded-lg p-6">
-          <div className="text-gray-400 text-sm">Mined (24h)</div>
-          <div className="text-2xl font-bold text-green-400">
+        <div className="bg-gray-800 rounded-lg p-4 md:p-6 col-span-2 md:col-span-1">
+          <div className="text-gray-400 text-xs md:text-sm">Mined (24h)</div>
+          <div className="text-lg md:text-2xl font-bold text-green-400">
             {Number(formatTetsuo(stats.minedLast24h, 0)).toLocaleString()}
           </div>
           <div className="text-gray-500 text-xs">{stats.blocksFoundLast24h} blocks</div>
@@ -98,8 +98,8 @@ export default async function HomePage() {
       </div>
 
       {/* Hashrate Chart */}
-      <div className="bg-gray-800 rounded-lg p-6">
-        <h2 className="text-xl font-bold mb-4">Pool Hashrate (24h)</h2>
+      <div className="bg-gray-800 rounded-lg p-4 md:p-6">
+        <h2 className="text-lg md:text-xl font-bold mb-4">Pool Hashrate (24h)</h2>
         <HashrateChart />
       </div>
 
@@ -107,32 +107,32 @@ export default async function HomePage() {
       <ConnectSection minPayout={stats.minPayout} />
 
       {/* Pool Info */}
-      <div className="bg-gray-800 rounded-lg p-6">
-        <h2 className="text-xl font-bold mb-4">Pool Information</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+      <div className="bg-gray-800 rounded-lg p-4 md:p-6">
+        <h2 className="text-lg md:text-xl font-bold mb-4">Pool Information</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 text-xs md:text-sm">
           <div>
             <span className="text-gray-400">Algorithm:</span>
-            <span className="ml-2">SHA-256</span>
+            <span className="ml-1 md:ml-2">SHA-256</span>
           </div>
           <div>
             <span className="text-gray-400">Pool Fee:</span>
-            <span className="ml-2">{stats.poolFee}%</span>
+            <span className="ml-1 md:ml-2">{stats.poolFee}%</span>
           </div>
           <div>
             <span className="text-gray-400">Payout Model:</span>
-            <span className="ml-2">PPLNS</span>
+            <span className="ml-1 md:ml-2">PPLNS</span>
           </div>
           <div>
             <span className="text-gray-400">Min Payout:</span>
-            <span className="ml-2">{stats.minPayout} TETSUO</span>
+            <span className="ml-1 md:ml-2">{stats.minPayout} TETSUO</span>
           </div>
           <div>
-            <span className="text-gray-400">Payout Frequency:</span>
-            <span className="ml-2">Hourly</span>
+            <span className="text-gray-400">Payout:</span>
+            <span className="ml-1 md:ml-2">Hourly</span>
           </div>
           <div>
             <span className="text-gray-400">Block Time:</span>
-            <span className="ml-2">60 seconds</span>
+            <span className="ml-1 md:ml-2">60 sec</span>
           </div>
         </div>
       </div>

@@ -34,24 +34,24 @@ export default async function BlocksPage({
   const { blocks, total, pages } = await getBlocks(page);
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Pool Blocks</h1>
-        <span className="text-gray-400">Total: {total} blocks</span>
+    <div className="space-y-4 md:space-y-6">
+      <div className="flex flex-col md:flex-row justify-between md:items-center gap-2">
+        <h1 className="text-2xl md:text-3xl font-bold">Pool Blocks</h1>
+        <span className="text-gray-400 text-sm">Total: {total} blocks</span>
       </div>
 
-      <div className="bg-gray-800 rounded-lg overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="bg-gray-800 rounded-lg overflow-hidden overflow-x-auto">
+        <table className="w-full text-xs md:text-sm min-w-[600px]">
           <thead>
             <tr className="text-gray-400 bg-gray-900">
-              <th className="text-left px-4 py-3">Height</th>
-              <th className="text-left px-4 py-3">Hash</th>
-              <th className="text-left px-4 py-3">Reward</th>
-              <th className="text-left px-4 py-3">Found By</th>
-              <th className="text-left px-4 py-3">Miners Paid</th>
-              <th className="text-left px-4 py-3">Confirmations</th>
-              <th className="text-left px-4 py-3">Status</th>
-              <th className="text-left px-4 py-3">Time</th>
+              <th className="text-left px-3 md:px-4 py-2 md:py-3">Height</th>
+              <th className="text-left px-3 md:px-4 py-2 md:py-3">Hash</th>
+              <th className="text-left px-3 md:px-4 py-2 md:py-3">Reward</th>
+              <th className="text-left px-3 md:px-4 py-2 md:py-3 hidden md:table-cell">Found By</th>
+              <th className="text-left px-3 md:px-4 py-2 md:py-3 hidden md:table-cell">Miners</th>
+              <th className="text-left px-3 md:px-4 py-2 md:py-3">Conf</th>
+              <th className="text-left px-3 md:px-4 py-2 md:py-3">Status</th>
+              <th className="text-left px-3 md:px-4 py-2 md:py-3 hidden md:table-cell">Time</th>
             </tr>
           </thead>
           <tbody>
@@ -60,24 +60,24 @@ export default async function BlocksPage({
                 key={block.id}
                 className="border-t border-gray-700 hover:bg-gray-700/30"
               >
-                <td className="px-4 py-3 font-mono">{block.height}</td>
-                <td className="px-4 py-3 font-mono text-xs">
+                <td className="px-3 md:px-4 py-2 md:py-3 font-mono">{block.height}</td>
+                <td className="px-3 md:px-4 py-2 md:py-3 font-mono text-xs">
                   <a
                     href={`/blocks/${block.hash}`}
                     className="text-blue-400 hover:underline"
                   >
-                    {block.hash.slice(0, 20)}...
+                    {block.hash.slice(0, 12)}...
                   </a>
                 </td>
-                <td className="px-4 py-3">{formatTetsuo(block.reward)} TETSUO</td>
-                <td className="px-4 py-3 font-mono text-xs">
+                <td className="px-3 md:px-4 py-2 md:py-3 whitespace-nowrap">{formatTetsuo(block.reward)}</td>
+                <td className="px-3 md:px-4 py-2 md:py-3 font-mono text-xs hidden md:table-cell">
                   {block.foundByUser?.address.slice(0, 12)}...
                 </td>
-                <td className="px-4 py-3">{block._count.rewards}</td>
-                <td className="px-4 py-3">{block.confirmations}</td>
-                <td className="px-4 py-3">
+                <td className="px-3 md:px-4 py-2 md:py-3 hidden md:table-cell">{block._count.rewards}</td>
+                <td className="px-3 md:px-4 py-2 md:py-3">{block.confirmations}</td>
+                <td className="px-3 md:px-4 py-2 md:py-3">
                   <span
-                    className={`px-2 py-1 rounded text-xs ${
+                    className={`px-1.5 md:px-2 py-0.5 md:py-1 rounded text-xs ${
                       block.status === "CONFIRMED"
                         ? "bg-green-900 text-green-300"
                         : block.status === "PENDING"
@@ -85,10 +85,10 @@ export default async function BlocksPage({
                         : "bg-red-900 text-red-300"
                     }`}
                   >
-                    {block.status}
+                    {block.status.slice(0, 4)}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-gray-400">
+                <td className="px-3 md:px-4 py-2 md:py-3 text-gray-400 hidden md:table-cell">
                   {block.foundAt.toLocaleString()}
                 </td>
               </tr>
@@ -106,22 +106,22 @@ export default async function BlocksPage({
 
       {/* Pagination */}
       {pages > 1 && (
-        <div className="flex justify-center gap-2">
+        <div className="flex justify-center items-center gap-2 text-sm">
           {page > 1 && (
             <a
               href={`/blocks?page=${page - 1}`}
-              className="px-4 py-2 bg-gray-800 rounded hover:bg-gray-700"
+              className="px-3 md:px-4 py-2 bg-gray-800 rounded hover:bg-gray-700"
             >
-              Previous
+              Prev
             </a>
           )}
-          <span className="px-4 py-2">
-            Page {page} of {pages}
+          <span className="px-3 md:px-4 py-2 text-gray-400">
+            {page}/{pages}
           </span>
           {page < pages && (
             <a
               href={`/blocks?page=${page + 1}`}
-              className="px-4 py-2 bg-gray-800 rounded hover:bg-gray-700"
+              className="px-3 md:px-4 py-2 bg-gray-800 rounded hover:bg-gray-700"
             >
               Next
             </a>

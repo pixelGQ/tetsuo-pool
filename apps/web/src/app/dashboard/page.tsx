@@ -61,64 +61,64 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Miner Dashboard</h1>
+    <div className="space-y-4 md:space-y-6">
+      <h1 className="text-2xl md:text-3xl font-bold">Miner Dashboard</h1>
 
       {/* Address Lookup */}
-      <div className="bg-gray-800 rounded-lg p-6">
-        <div className="flex gap-4">
+      <div className="bg-gray-800 rounded-lg p-4 md:p-6">
+        <div className="flex flex-col md:flex-row gap-3 md:gap-4">
           <input
             type="text"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             placeholder="Enter your TETSUO address"
-            className="flex-1 px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500"
+            className="flex-1 px-3 md:px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500 text-sm md:text-base"
             onKeyDown={(e) => e.key === "Enter" && lookupMiner()}
           />
           <button
             onClick={lookupMiner}
             disabled={loading}
-            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg disabled:opacity-50"
+            className="px-4 md:px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg disabled:opacity-50 text-sm md:text-base"
           >
             {loading ? "Loading..." : "Lookup"}
           </button>
         </div>
-        {error && <p className="mt-2 text-red-400">{error}</p>}
+        {error && <p className="mt-2 text-red-400 text-sm">{error}</p>}
       </div>
 
       {/* Miner Stats */}
       {stats && (
         <>
           {/* Overview */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-gray-800 rounded-lg p-6">
-              <div className="text-gray-400 text-sm">Your Hashrate</div>
-              <div className="text-2xl font-bold">{formatHashrate(stats.hashrate)}</div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+            <div className="bg-gray-800 rounded-lg p-4 md:p-6">
+              <div className="text-gray-400 text-xs md:text-sm">Your Hashrate</div>
+              <div className="text-lg md:text-2xl font-bold">{formatHashrate(stats.hashrate)}</div>
             </div>
-            <div className="bg-gray-800 rounded-lg p-6">
-              <div className="text-gray-400 text-sm">Pending Balance</div>
-              <div className="text-2xl font-bold">{formatTetsuo(stats.pendingBalance)} TETSUO</div>
+            <div className="bg-gray-800 rounded-lg p-4 md:p-6">
+              <div className="text-gray-400 text-xs md:text-sm">Pending</div>
+              <div className="text-lg md:text-2xl font-bold">{formatTetsuo(stats.pendingBalance)}</div>
             </div>
-            <div className="bg-gray-800 rounded-lg p-6">
-              <div className="text-gray-400 text-sm">Total Paid</div>
-              <div className="text-2xl font-bold">{formatTetsuo(stats.paidBalance)} TETSUO</div>
+            <div className="bg-gray-800 rounded-lg p-4 md:p-6">
+              <div className="text-gray-400 text-xs md:text-sm">Total Paid</div>
+              <div className="text-lg md:text-2xl font-bold">{formatTetsuo(stats.paidBalance)}</div>
             </div>
-            <div className="bg-gray-800 rounded-lg p-6">
-              <div className="text-gray-400 text-sm">Blocks Found</div>
-              <div className="text-2xl font-bold">{stats.blocksFound}</div>
+            <div className="bg-gray-800 rounded-lg p-4 md:p-6">
+              <div className="text-gray-400 text-xs md:text-sm">Blocks Found</div>
+              <div className="text-lg md:text-2xl font-bold">{stats.blocksFound}</div>
             </div>
           </div>
 
           {/* Workers */}
-          <div className="bg-gray-800 rounded-lg p-6">
-            <h2 className="text-xl font-bold mb-4">Your Workers</h2>
+          <div className="bg-gray-800 rounded-lg p-4 md:p-6">
+            <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4">Your Workers</h2>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="w-full text-xs md:text-sm">
                 <thead>
                   <tr className="text-gray-400 border-b border-gray-700">
-                    <th className="text-left py-2">Worker Name</th>
+                    <th className="text-left py-2">Worker</th>
                     <th className="text-left py-2">Status</th>
-                    <th className="text-left py-2">Last Seen</th>
+                    <th className="text-left py-2 hidden md:table-cell">Last Seen</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -127,7 +127,7 @@ export default function DashboardPage() {
                       <td className="py-2">{worker.name}</td>
                       <td className="py-2">
                         <span
-                          className={`px-2 py-1 rounded text-xs ${
+                          className={`px-1.5 md:px-2 py-0.5 md:py-1 rounded text-xs ${
                             worker.isOnline
                               ? "bg-green-900 text-green-300"
                               : "bg-gray-700 text-gray-400"
@@ -136,7 +136,7 @@ export default function DashboardPage() {
                           {worker.isOnline ? "Online" : "Offline"}
                         </span>
                       </td>
-                      <td className="py-2 text-gray-400">
+                      <td className="py-2 text-gray-400 hidden md:table-cell">
                         {new Date(worker.lastSeen).toLocaleString()}
                       </td>
                     </tr>
@@ -154,28 +154,28 @@ export default function DashboardPage() {
           </div>
 
           {/* Recent Payouts */}
-          <div className="bg-gray-800 rounded-lg p-6">
-            <h2 className="text-xl font-bold mb-4">Recent Payouts</h2>
+          <div className="bg-gray-800 rounded-lg p-4 md:p-6">
+            <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4">Recent Payouts</h2>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="w-full text-xs md:text-sm">
                 <thead>
                   <tr className="text-gray-400 border-b border-gray-700">
                     <th className="text-left py-2">Amount</th>
-                    <th className="text-left py-2">TX ID</th>
+                    <th className="text-left py-2 hidden md:table-cell">TX ID</th>
                     <th className="text-left py-2">Status</th>
-                    <th className="text-left py-2">Time</th>
+                    <th className="text-left py-2 hidden md:table-cell">Time</th>
                   </tr>
                 </thead>
                 <tbody>
                   {stats.recentPayouts.map((payout, i) => (
                     <tr key={i} className="border-b border-gray-700/50">
-                      <td className="py-2">{formatTetsuo(payout.amount)} TETSUO</td>
-                      <td className="py-2 font-mono text-xs">
-                        {payout.txid ? `${payout.txid.slice(0, 16)}...` : "-"}
+                      <td className="py-2">{formatTetsuo(payout.amount)}</td>
+                      <td className="py-2 font-mono text-xs hidden md:table-cell">
+                        {payout.txid ? `${payout.txid.slice(0, 12)}...` : "-"}
                       </td>
                       <td className="py-2">
                         <span
-                          className={`px-2 py-1 rounded text-xs ${
+                          className={`px-1.5 md:px-2 py-0.5 md:py-1 rounded text-xs ${
                             payout.status === "CONFIRMED"
                               ? "bg-green-900 text-green-300"
                               : payout.status === "SENT"
@@ -188,7 +188,7 @@ export default function DashboardPage() {
                           {payout.status}
                         </span>
                       </td>
-                      <td className="py-2 text-gray-400">
+                      <td className="py-2 text-gray-400 hidden md:table-cell">
                         {new Date(payout.createdAt).toLocaleString()}
                       </td>
                     </tr>

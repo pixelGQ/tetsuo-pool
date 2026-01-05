@@ -88,88 +88,85 @@ export default function NetworkPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">TETSUO Network</h1>
+    <div className="space-y-4 md:space-y-6">
+      <div className="flex flex-col md:flex-row justify-between md:items-center gap-2">
+        <h1 className="text-2xl md:text-3xl font-bold">TETSUO Network</h1>
         {stats?.syncing && (
-          <span className="px-3 py-1 bg-yellow-900 text-yellow-300 rounded text-sm">
+          <span className="px-3 py-1 bg-yellow-900 text-yellow-300 rounded text-sm w-fit">
             Syncing...
           </span>
         )}
       </div>
 
       {/* Main Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-gray-800 rounded-lg p-6">
-          <div className="text-gray-400 text-sm mb-1">Block Height</div>
-          <div className="text-3xl font-bold text-blue-400">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+        <div className="bg-gray-800 rounded-lg p-4 md:p-6">
+          <div className="text-gray-400 text-xs md:text-sm mb-1">Block Height</div>
+          <div className="text-xl md:text-3xl font-bold text-blue-400">
             {formatNumber(stats?.blockHeight ?? 0)}
           </div>
         </div>
 
-        <div className="bg-gray-800 rounded-lg p-6">
-          <div className="text-gray-400 text-sm mb-1">Difficulty</div>
-          <div className="text-3xl font-bold text-purple-400">
+        <div className="bg-gray-800 rounded-lg p-4 md:p-6">
+          <div className="text-gray-400 text-xs md:text-sm mb-1">Difficulty</div>
+          <div className="text-xl md:text-3xl font-bold text-purple-400">
             {formatDifficulty(stats?.difficulty ?? 0)}
-          </div>
-          <div className="text-xs text-gray-500 mt-1">
-            {stats?.difficulty.toLocaleString("en-US", { maximumFractionDigits: 2 })}
           </div>
         </div>
 
-        <div className="bg-gray-800 rounded-lg p-6">
-          <div className="text-gray-400 text-sm mb-1">Network Hashrate</div>
-          <div className="text-3xl font-bold text-green-400">
+        <div className="bg-gray-800 rounded-lg p-4 md:p-6">
+          <div className="text-gray-400 text-xs md:text-sm mb-1">Net Hashrate</div>
+          <div className="text-xl md:text-3xl font-bold text-green-400">
             {formatHashrate(stats?.networkHashrate ?? 0)}
           </div>
         </div>
 
-        <div className="bg-gray-800 rounded-lg p-6">
-          <div className="text-gray-400 text-sm mb-1">Block Reward</div>
-          <div className="text-3xl font-bold text-yellow-400">
+        <div className="bg-gray-800 rounded-lg p-4 md:p-6">
+          <div className="text-gray-400 text-xs md:text-sm mb-1">Block Reward</div>
+          <div className="text-xl md:text-3xl font-bold text-yellow-400">
             {formatNumber(stats?.blockReward ?? 0)}
           </div>
-          <div className="text-xs text-gray-500 mt-1">TETSUO</div>
+          <div className="text-xs text-gray-500">TETSUO</div>
         </div>
       </div>
 
       {/* Additional Info */}
-      <div className="bg-gray-800 rounded-lg p-6">
-        <h2 className="text-xl font-bold mb-4">Network Information</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+      <div className="bg-gray-800 rounded-lg p-4 md:p-6">
+        <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4">Network Information</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 text-xs md:text-sm">
           <div>
             <span className="text-gray-400">Chain:</span>
-            <span className="ml-2 capitalize">{stats?.chain ?? "main"}</span>
+            <span className="ml-1 md:ml-2 capitalize">{stats?.chain ?? "main"}</span>
           </div>
           <div>
             <span className="text-gray-400">Block Time:</span>
-            <span className="ml-2">60 seconds</span>
+            <span className="ml-1 md:ml-2">60 sec</span>
           </div>
           <div>
             <span className="text-gray-400">Algorithm:</span>
-            <span className="ml-2">SHA-256</span>
+            <span className="ml-1 md:ml-2">SHA-256</span>
           </div>
           <div>
             <span className="text-gray-400">Headers:</span>
-            <span className="ml-2">{formatNumber(stats?.headers ?? 0)}</span>
+            <span className="ml-1 md:ml-2">{formatNumber(stats?.headers ?? 0)}</span>
           </div>
           <div>
-            <span className="text-gray-400">Sync Status:</span>
-            <span className={`ml-2 ${stats?.syncing ? "text-yellow-400" : "text-green-400"}`}>
+            <span className="text-gray-400">Status:</span>
+            <span className={`ml-1 md:ml-2 ${stats?.syncing ? "text-yellow-400" : "text-green-400"}`}>
               {stats?.syncing ? "Syncing" : "Synced"}
             </span>
           </div>
           <div>
-            <span className="text-gray-400">Daily Blocks:</span>
-            <span className="ml-2">~1,440</span>
+            <span className="text-gray-400">Daily:</span>
+            <span className="ml-1 md:ml-2">~1,440 blk</span>
           </div>
         </div>
       </div>
 
       {/* Estimated Earnings Calculator */}
-      <div className="bg-gray-800 rounded-lg p-6">
-        <h2 className="text-xl font-bold mb-4">Earnings Calculator</h2>
-        <p className="text-gray-400 text-sm mb-4">
+      <div className="bg-gray-800 rounded-lg p-4 md:p-6">
+        <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4">Earnings Calculator</h2>
+        <p className="text-gray-400 text-xs md:text-sm mb-3 md:mb-4">
           Estimate your daily earnings based on your hashrate
         </p>
         <EarningsCalculator
@@ -207,19 +204,19 @@ function EarningsCalculator({
     : 0;
 
   return (
-    <div className="space-y-4">
-      <div className="flex gap-2">
+    <div className="space-y-3 md:space-y-4">
+      <div className="flex flex-col md:flex-row gap-2">
         <input
           type="number"
           value={hashrate}
           onChange={(e) => setHashrate(e.target.value)}
           placeholder="Enter your hashrate"
-          className="flex-1 px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500"
+          className="flex-1 px-3 md:px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500 text-sm md:text-base"
         />
         <select
           value={unit}
           onChange={(e) => setUnit(e.target.value)}
-          className="px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500"
+          className="px-3 md:px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500 text-sm md:text-base"
         >
           {Object.keys(multipliers).map((u) => (
             <option key={u} value={u}>{u}</option>
@@ -228,29 +225,29 @@ function EarningsCalculator({
       </div>
 
       {userHashrate > 0 && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-gray-700 rounded p-4">
-            <div className="text-gray-400 text-xs">Daily (est.)</div>
-            <div className="text-lg font-bold text-green-400">
-              {dailyReward.toFixed(2)} TETSUO
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
+          <div className="bg-gray-700 rounded p-3 md:p-4">
+            <div className="text-gray-400 text-xs">Daily</div>
+            <div className="text-sm md:text-lg font-bold text-green-400">
+              {dailyReward.toFixed(0)}
             </div>
           </div>
-          <div className="bg-gray-700 rounded p-4">
-            <div className="text-gray-400 text-xs">Weekly (est.)</div>
-            <div className="text-lg font-bold text-green-400">
-              {(dailyReward * 7).toFixed(2)} TETSUO
+          <div className="bg-gray-700 rounded p-3 md:p-4">
+            <div className="text-gray-400 text-xs">Weekly</div>
+            <div className="text-sm md:text-lg font-bold text-green-400">
+              {(dailyReward * 7).toFixed(0)}
             </div>
           </div>
-          <div className="bg-gray-700 rounded p-4">
-            <div className="text-gray-400 text-xs">Monthly (est.)</div>
-            <div className="text-lg font-bold text-green-400">
-              {(dailyReward * 30).toFixed(2)} TETSUO
+          <div className="bg-gray-700 rounded p-3 md:p-4">
+            <div className="text-gray-400 text-xs">Monthly</div>
+            <div className="text-sm md:text-lg font-bold text-green-400">
+              {(dailyReward * 30).toFixed(0)}
             </div>
           </div>
-          <div className="bg-gray-700 rounded p-4">
-            <div className="text-gray-400 text-xs">Network Share</div>
-            <div className="text-lg font-bold text-blue-400">
-              {((userHashrate / networkHashrate) * 100).toFixed(6)}%
+          <div className="bg-gray-700 rounded p-3 md:p-4">
+            <div className="text-gray-400 text-xs">Net Share</div>
+            <div className="text-sm md:text-lg font-bold text-blue-400">
+              {((userHashrate / networkHashrate) * 100).toFixed(4)}%
             </div>
           </div>
         </div>
