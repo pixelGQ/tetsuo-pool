@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { MobileNav } from "./components/MobileNav";
+import { ThemeToggle } from "./components/ThemeToggle";
 
 export const metadata: Metadata = {
   title: "TETSUO Mining Pool",
@@ -13,38 +14,48 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="bg-gray-900 text-gray-100 min-h-screen">
-        <nav className="bg-gray-800 border-b border-gray-700">
+    <html lang="en" className="dark" suppressHydrationWarning>
+      <body className="min-h-screen">
+        <nav className="manga-nav">
           <div className="max-w-7xl mx-auto px-4 py-4">
             <div className="flex justify-between items-center">
-              <a href="/" className="text-xl font-bold text-white">
+              <a href="/" className="text-xl md:text-2xl font-black tracking-tight uppercase">
                 TETSUO Pool
               </a>
               {/* Desktop menu */}
-              <div className="hidden md:flex gap-6">
-                <a href="/" className="text-gray-300 hover:text-white">
+              <div className="hidden md:flex items-center gap-6">
+                <a href="/" className="manga-nav-link">
                   Home
                 </a>
-                <a href="/network" className="text-gray-300 hover:text-white">
+                <a href="/network" className="manga-nav-link">
                   Network
                 </a>
-                <a href="/stats" className="text-gray-300 hover:text-white">
+                <a href="/stats" className="manga-nav-link">
                   Stats
                 </a>
-                <a href="/blocks" className="text-gray-300 hover:text-white">
+                <a href="/blocks" className="manga-nav-link">
                   Blocks
                 </a>
-                <a href="/dashboard" className="text-gray-300 hover:text-white">
+                <a href="/dashboard" className="manga-nav-link">
                   Dashboard
                 </a>
+                <ThemeToggle />
               </div>
-              {/* Mobile menu button */}
-              <MobileNav />
+              {/* Mobile menu */}
+              <div className="flex md:hidden items-center gap-2">
+                <ThemeToggle />
+                <MobileNav />
+              </div>
             </div>
           </div>
         </nav>
         <main className="max-w-7xl mx-auto px-4 py-6 md:py-8">{children}</main>
+        <footer className="border-t-2 border-[--border] mt-12">
+          <div className="max-w-7xl mx-auto px-4 py-6 text-center text-[--text-muted] text-sm">
+            <p className="font-semibold uppercase tracking-wide">TETSUO Mining Pool</p>
+            <p className="mt-1">Stratum: stratum+tcp://tetsuo.ink:3333</p>
+          </div>
+        </footer>
       </body>
     </html>
   );

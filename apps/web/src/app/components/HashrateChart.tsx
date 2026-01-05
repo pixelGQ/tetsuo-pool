@@ -28,8 +28,18 @@ function formatHashrate(hashrate: number): string {
 export function HashrateChart() {
   const [data, setData] = useState<DataPoint[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
+    // Check theme
+    setIsDark(document.documentElement.classList.contains("dark"));
+
+    // Listen for theme changes
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+
     fetch("/api/pool/hashrate-history")
       .then((res) => res.json())
       .then((data) => {
@@ -37,11 +47,21 @@ export function HashrateChart() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
+
+    return () => observer.disconnect();
   }, []);
+
+  const colors = {
+    stroke: isDark ? "#FFFFFF" : "#000000",
+    fill: isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)",
+    axis: isDark ? "#A3A3A3" : "#737373",
+    tooltipBg: isDark ? "#0F0F0F" : "#FFFFFF",
+    tooltipBorder: isDark ? "#FFFFFF" : "#000000",
+  };
 
   if (loading) {
     return (
-      <div className="h-64 flex items-center justify-center text-gray-400">
+      <div className="h-64 flex items-center justify-center text-[--text-muted] uppercase tracking-wide font-bold">
         Loading...
       </div>
     );
@@ -49,7 +69,7 @@ export function HashrateChart() {
 
   if (data.length === 0) {
     return (
-      <div className="h-64 flex items-center justify-center text-gray-400">
+      <div className="h-64 flex items-center justify-center text-[--text-muted] uppercase tracking-wide font-bold">
         No data available
       </div>
     );
@@ -61,22 +81,24 @@ export function HashrateChart() {
         <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id="hashrateGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+              <stop offset="5%" stopColor={colors.stroke} stopOpacity={0.2} />
+              <stop offset="95%" stopColor={colors.stroke} stopOpacity={0} />
             </linearGradient>
           </defs>
           <XAxis
             dataKey="hour"
-            stroke="#6b7280"
+            stroke={colors.axis}
             fontSize={12}
             tickLine={false}
-            axisLine={false}
+            axisLine={{ stroke: colors.axis, strokeWidth: 1 }}
+            fontWeight={600}
           />
           <YAxis
-            stroke="#6b7280"
+            stroke={colors.axis}
             fontSize={12}
             tickLine={false}
-            axisLine={false}
+            axisLine={{ stroke: colors.axis, strokeWidth: 1 }}
+            fontWeight={600}
             tickFormatter={(value: number) => {
               if (value >= 1e12) return `${(value / 1e12).toFixed(0)}T`;
               if (value >= 1e9) return `${(value / 1e9).toFixed(0)}G`;
@@ -86,17 +108,18 @@ export function HashrateChart() {
           />
           <Tooltip
             contentStyle={{
-              backgroundColor: "#1f2937",
-              border: "1px solid #374151",
-              borderRadius: "8px",
+              backgroundColor: colors.tooltipBg,
+              border: `2px solid ${colors.tooltipBorder}`,
+              borderRadius: "0",
+              fontWeight: 700,
             }}
-            labelStyle={{ color: "#9ca3af" }}
+            labelStyle={{ color: colors.axis, fontWeight: 600 }}
             formatter={(value) => [formatHashrate(value as number), "Hashrate"]}
           />
           <Area
             type="monotone"
             dataKey="hashrate"
-            stroke="#3b82f6"
+            stroke={colors.stroke}
             strokeWidth={2}
             fill="url(#hashrateGradient)"
           />

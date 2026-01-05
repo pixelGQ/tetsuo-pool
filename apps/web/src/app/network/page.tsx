@@ -58,14 +58,14 @@ export default function NetworkPage() {
 
   useEffect(() => {
     fetchStats();
-    const interval = setInterval(fetchStats, 5000); // Update every 5s
+    const interval = setInterval(fetchStats, 5000);
     return () => clearInterval(interval);
   }, []);
 
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-gray-400">Loading network stats...</div>
+        <div className="text-[--text-muted] uppercase tracking-wide font-bold">Loading network stats...</div>
       </div>
     );
   }
@@ -73,12 +73,12 @@ export default function NetworkPage() {
   if (error) {
     return (
       <div className="space-y-6">
-        <h1 className="text-3xl font-bold">TETSUO Network</h1>
-        <div className="bg-red-900/30 border border-red-700 rounded-lg p-6">
-          <p className="text-red-400">{error}</p>
+        <h1 className="text-2xl md:text-3xl font-black uppercase tracking-tight">TETSUO Network</h1>
+        <div className="manga-card p-4 md:p-6">
+          <p className="text-[--text-muted] font-bold">{error}</p>
           <button
             onClick={() => { setLoading(true); fetchStats(); }}
-            className="mt-4 px-4 py-2 bg-red-700 hover:bg-red-600 rounded"
+            className="mt-4 px-4 py-2 border-2 border-[--border] bg-[--bg-secondary] font-bold uppercase hover:bg-[--accent] hover:text-[--bg-primary] transition-colors"
           >
             Retry
           </button>
@@ -90,9 +90,9 @@ export default function NetworkPage() {
   return (
     <div className="space-y-4 md:space-y-6">
       <div className="flex flex-col md:flex-row justify-between md:items-center gap-2">
-        <h1 className="text-2xl md:text-3xl font-bold">TETSUO Network</h1>
+        <h1 className="text-2xl md:text-3xl font-black uppercase tracking-tight">TETSUO Network</h1>
         {stats?.syncing && (
-          <span className="px-3 py-1 bg-yellow-900 text-yellow-300 rounded text-sm w-fit">
+          <span className="px-3 py-1 border-2 border-[--border] bg-[--bg-secondary] text-[--text-muted] text-sm font-bold uppercase w-fit">
             Syncing...
           </span>
         )}
@@ -100,73 +100,73 @@ export default function NetworkPage() {
 
       {/* Main Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-        <div className="bg-gray-800 rounded-lg p-4 md:p-6">
-          <div className="text-gray-400 text-xs md:text-sm mb-1">Block Height</div>
-          <div className="text-xl md:text-3xl font-bold text-blue-400">
+        <div className="manga-card p-4 md:p-6">
+          <div className="text-[--text-muted] text-xs md:text-sm uppercase tracking-wide">Block Height</div>
+          <div className="stat-number mt-1">
             {formatNumber(stats?.blockHeight ?? 0)}
           </div>
         </div>
 
-        <div className="bg-gray-800 rounded-lg p-4 md:p-6">
-          <div className="text-gray-400 text-xs md:text-sm mb-1">Difficulty</div>
-          <div className="text-xl md:text-3xl font-bold text-purple-400">
+        <div className="manga-card p-4 md:p-6">
+          <div className="text-[--text-muted] text-xs md:text-sm uppercase tracking-wide">Difficulty</div>
+          <div className="stat-number mt-1">
             {formatDifficulty(stats?.difficulty ?? 0)}
           </div>
         </div>
 
-        <div className="bg-gray-800 rounded-lg p-4 md:p-6">
-          <div className="text-gray-400 text-xs md:text-sm mb-1">Net Hashrate</div>
-          <div className="text-xl md:text-3xl font-bold text-green-400">
+        <div className="manga-card p-4 md:p-6">
+          <div className="text-[--text-muted] text-xs md:text-sm uppercase tracking-wide">Net Hashrate</div>
+          <div className="stat-number mt-1">
             {formatHashrate(stats?.networkHashrate ?? 0)}
           </div>
         </div>
 
-        <div className="bg-gray-800 rounded-lg p-4 md:p-6">
-          <div className="text-gray-400 text-xs md:text-sm mb-1">Block Reward</div>
-          <div className="text-xl md:text-3xl font-bold text-yellow-400">
+        <div className="manga-card p-4 md:p-6">
+          <div className="text-[--text-muted] text-xs md:text-sm uppercase tracking-wide">Block Reward</div>
+          <div className="stat-number mt-1">
             {formatNumber(stats?.blockReward ?? 0)}
           </div>
-          <div className="text-xs text-gray-500">TETSUO</div>
+          <div className="text-xs text-[--text-muted]">TETSUO</div>
         </div>
       </div>
 
       {/* Additional Info */}
-      <div className="bg-gray-800 rounded-lg p-4 md:p-6">
-        <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4">Network Information</h2>
+      <div className="manga-card p-4 md:p-6">
+        <h2 className="text-lg md:text-xl font-black uppercase tracking-wide mb-3 md:mb-4">Network Information</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 text-xs md:text-sm">
-          <div>
-            <span className="text-gray-400">Chain:</span>
-            <span className="ml-1 md:ml-2 capitalize">{stats?.chain ?? "main"}</span>
+          <div className="flex justify-between border-b border-[--border-light] pb-2">
+            <span className="text-[--text-muted] uppercase">Chain</span>
+            <span className="font-bold capitalize">{stats?.chain ?? "main"}</span>
           </div>
-          <div>
-            <span className="text-gray-400">Block Time:</span>
-            <span className="ml-1 md:ml-2">60 sec</span>
+          <div className="flex justify-between border-b border-[--border-light] pb-2">
+            <span className="text-[--text-muted] uppercase">Block Time</span>
+            <span className="font-bold">60 sec</span>
           </div>
-          <div>
-            <span className="text-gray-400">Algorithm:</span>
-            <span className="ml-1 md:ml-2">SHA-256</span>
+          <div className="flex justify-between border-b border-[--border-light] pb-2">
+            <span className="text-[--text-muted] uppercase">Algorithm</span>
+            <span className="font-bold">SHA-256</span>
           </div>
-          <div>
-            <span className="text-gray-400">Headers:</span>
-            <span className="ml-1 md:ml-2">{formatNumber(stats?.headers ?? 0)}</span>
+          <div className="flex justify-between border-b border-[--border-light] pb-2">
+            <span className="text-[--text-muted] uppercase">Headers</span>
+            <span className="font-bold">{formatNumber(stats?.headers ?? 0)}</span>
           </div>
-          <div>
-            <span className="text-gray-400">Status:</span>
-            <span className={`ml-1 md:ml-2 ${stats?.syncing ? "text-yellow-400" : "text-green-400"}`}>
+          <div className="flex justify-between border-b border-[--border-light] pb-2">
+            <span className="text-[--text-muted] uppercase">Status</span>
+            <span className="font-bold">
               {stats?.syncing ? "Syncing" : "Synced"}
             </span>
           </div>
-          <div>
-            <span className="text-gray-400">Daily:</span>
-            <span className="ml-1 md:ml-2">~1,440 blk</span>
+          <div className="flex justify-between border-b border-[--border-light] pb-2">
+            <span className="text-[--text-muted] uppercase">Daily</span>
+            <span className="font-bold">~1,440 blk</span>
           </div>
         </div>
       </div>
 
       {/* Estimated Earnings Calculator */}
-      <div className="bg-gray-800 rounded-lg p-4 md:p-6">
-        <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4">Earnings Calculator</h2>
-        <p className="text-gray-400 text-xs md:text-sm mb-3 md:mb-4">
+      <div className="manga-card p-4 md:p-6">
+        <h2 className="text-lg md:text-xl font-black uppercase tracking-wide mb-3 md:mb-4">Earnings Calculator</h2>
+        <p className="text-[--text-muted] text-xs md:text-sm mb-3 md:mb-4">
           Estimate your daily earnings based on your hashrate
         </p>
         <EarningsCalculator
@@ -198,7 +198,7 @@ function EarningsCalculator({
   };
 
   const userHashrate = parseFloat(hashrate || "0") * multipliers[unit];
-  const blocksPerDay = 1440; // 60 sec blocks = 1440 blocks/day
+  const blocksPerDay = 1440;
   const dailyReward = networkHashrate > 0
     ? (userHashrate / networkHashrate) * blocksPerDay * blockReward
     : 0;
@@ -211,12 +211,12 @@ function EarningsCalculator({
           value={hashrate}
           onChange={(e) => setHashrate(e.target.value)}
           placeholder="Enter your hashrate"
-          className="flex-1 px-3 md:px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500 text-sm md:text-base"
+          className="flex-1 px-3 md:px-4 py-2 bg-[--bg-secondary] border-2 border-[--border] focus:outline-none text-sm md:text-base font-bold"
         />
         <select
           value={unit}
           onChange={(e) => setUnit(e.target.value)}
-          className="px-3 md:px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500 text-sm md:text-base"
+          className="px-3 md:px-4 py-2 bg-[--bg-secondary] border-2 border-[--border] focus:outline-none text-sm md:text-base font-bold"
         >
           {Object.keys(multipliers).map((u) => (
             <option key={u} value={u}>{u}</option>
@@ -226,27 +226,27 @@ function EarningsCalculator({
 
       {userHashrate > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
-          <div className="bg-gray-700 rounded p-3 md:p-4">
-            <div className="text-gray-400 text-xs">Daily</div>
-            <div className="text-sm md:text-lg font-bold text-green-400">
+          <div className="border-2 border-[--border] p-3 md:p-4 bg-[--bg-secondary]">
+            <div className="text-[--text-muted] text-xs uppercase">Daily</div>
+            <div className="text-sm md:text-lg font-black">
               {dailyReward.toFixed(0)}
             </div>
           </div>
-          <div className="bg-gray-700 rounded p-3 md:p-4">
-            <div className="text-gray-400 text-xs">Weekly</div>
-            <div className="text-sm md:text-lg font-bold text-green-400">
+          <div className="border-2 border-[--border] p-3 md:p-4 bg-[--bg-secondary]">
+            <div className="text-[--text-muted] text-xs uppercase">Weekly</div>
+            <div className="text-sm md:text-lg font-black">
               {(dailyReward * 7).toFixed(0)}
             </div>
           </div>
-          <div className="bg-gray-700 rounded p-3 md:p-4">
-            <div className="text-gray-400 text-xs">Monthly</div>
-            <div className="text-sm md:text-lg font-bold text-green-400">
+          <div className="border-2 border-[--border] p-3 md:p-4 bg-[--bg-secondary]">
+            <div className="text-[--text-muted] text-xs uppercase">Monthly</div>
+            <div className="text-sm md:text-lg font-black">
               {(dailyReward * 30).toFixed(0)}
             </div>
           </div>
-          <div className="bg-gray-700 rounded p-3 md:p-4">
-            <div className="text-gray-400 text-xs">Net Share</div>
-            <div className="text-sm md:text-lg font-bold text-blue-400">
+          <div className="border-2 border-[--border] p-3 md:p-4 bg-[--bg-secondary]">
+            <div className="text-[--text-muted] text-xs uppercase">Net Share</div>
+            <div className="text-sm md:text-lg font-black">
               {((userHashrate / networkHashrate) * 100).toFixed(4)}%
             </div>
           </div>

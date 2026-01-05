@@ -70,98 +70,98 @@ export default async function StatsPage() {
 
   return (
     <div className="space-y-4 md:space-y-8">
-      <h1 className="text-2xl md:text-3xl font-bold">Pool Statistics</h1>
+      <h1 className="text-2xl md:text-3xl font-black uppercase tracking-tight">Pool Statistics</h1>
 
       {/* Overview Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-        <div className="bg-gray-800 rounded-lg p-4 md:p-6">
-          <div className="text-gray-400 text-xs md:text-sm">Pool Hashrate</div>
-          <div className="text-lg md:text-2xl font-bold">{formatHashrate(stats.hashrate)}</div>
+        <div className="manga-card p-4 md:p-6">
+          <div className="text-[--text-muted] text-xs md:text-sm uppercase tracking-wide">Pool Hashrate</div>
+          <div className="stat-number mt-1">{formatHashrate(stats.hashrate)}</div>
         </div>
-        <div className="bg-gray-800 rounded-lg p-4 md:p-6">
-          <div className="text-gray-400 text-xs md:text-sm">Total Miners</div>
-          <div className="text-lg md:text-2xl font-bold">{stats.totalUsers}</div>
+        <div className="manga-card p-4 md:p-6">
+          <div className="text-[--text-muted] text-xs md:text-sm uppercase tracking-wide">Total Miners</div>
+          <div className="stat-number mt-1">{stats.totalUsers}</div>
         </div>
-        <div className="bg-gray-800 rounded-lg p-4 md:p-6">
-          <div className="text-gray-400 text-xs md:text-sm">Online Workers</div>
-          <div className="text-lg md:text-2xl font-bold">{stats.activeWorkers}</div>
+        <div className="manga-card p-4 md:p-6">
+          <div className="text-[--text-muted] text-xs md:text-sm uppercase tracking-wide">Online Workers</div>
+          <div className="stat-number mt-1">{stats.activeWorkers}</div>
         </div>
-        <div className="bg-gray-800 rounded-lg p-4 md:p-6">
-          <div className="text-gray-400 text-xs md:text-sm">Shares (1h)</div>
-          <div className="text-lg md:text-2xl font-bold">{stats.shares.hourCount.toLocaleString()}</div>
+        <div className="manga-card p-4 md:p-6">
+          <div className="text-[--text-muted] text-xs md:text-sm uppercase tracking-wide">Shares (1h)</div>
+          <div className="stat-number mt-1">{stats.shares.hourCount.toLocaleString()}</div>
         </div>
       </div>
 
       {/* Block Stats */}
-      <div className="bg-gray-800 rounded-lg p-4 md:p-6">
-        <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4">Block Statistics</h2>
+      <div className="manga-card p-4 md:p-6">
+        <h2 className="text-lg md:text-xl font-black uppercase tracking-wide mb-3 md:mb-4">Block Statistics</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-          <div>
-            <div className="text-gray-400 text-xs md:text-sm">Total</div>
-            <div className="text-lg md:text-xl font-bold">{stats.blocks.total}</div>
+          <div className="border-b border-[--border-light] pb-2">
+            <div className="text-[--text-muted] text-xs md:text-sm uppercase">Total</div>
+            <div className="text-lg md:text-xl font-black">{stats.blocks.total}</div>
           </div>
-          <div>
-            <div className="text-gray-400 text-xs md:text-sm">Confirmed</div>
-            <div className="text-lg md:text-xl font-bold text-green-400">{stats.blocks.confirmed}</div>
+          <div className="border-b border-[--border-light] pb-2">
+            <div className="text-[--text-muted] text-xs md:text-sm uppercase">Confirmed</div>
+            <div className="text-lg md:text-xl font-black">{stats.blocks.confirmed}</div>
           </div>
-          <div>
-            <div className="text-gray-400 text-xs md:text-sm">Pending</div>
-            <div className="text-lg md:text-xl font-bold text-yellow-400">{stats.blocks.pending}</div>
+          <div className="border-b border-[--border-light] pb-2">
+            <div className="text-[--text-muted] text-xs md:text-sm uppercase">Pending</div>
+            <div className="text-lg md:text-xl font-black">{stats.blocks.pending}</div>
           </div>
-          <div>
-            <div className="text-gray-400 text-xs md:text-sm">Orphaned</div>
-            <div className="text-lg md:text-xl font-bold text-red-400">{stats.blocks.orphaned}</div>
+          <div className="border-b border-[--border-light] pb-2">
+            <div className="text-[--text-muted] text-xs md:text-sm uppercase">Orphaned</div>
+            <div className="text-lg md:text-xl font-black">{stats.blocks.orphaned}</div>
           </div>
         </div>
       </div>
 
       {/* Recent Blocks */}
-      <div className="bg-gray-800 rounded-lg p-4 md:p-6">
-        <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4">Recent Blocks</h2>
+      <div className="manga-card p-4 md:p-6">
+        <h2 className="text-lg md:text-xl font-black uppercase tracking-wide mb-3 md:mb-4">Recent Blocks</h2>
         <div className="overflow-x-auto">
-          <table className="w-full text-xs md:text-sm min-w-[500px]">
+          <table className="w-full text-xs md:text-sm min-w-[500px] manga-table">
             <thead>
-              <tr className="text-gray-400 border-b border-gray-700">
-                <th className="text-left py-2">Height</th>
-                <th className="text-left py-2">Hash</th>
-                <th className="text-left py-2 hidden md:table-cell">Found By</th>
-                <th className="text-left py-2">Reward</th>
-                <th className="text-left py-2">Status</th>
-                <th className="text-left py-2 hidden md:table-cell">Time</th>
+              <tr>
+                <th className="text-left py-2 px-3">Height</th>
+                <th className="text-left py-2 px-3">Hash</th>
+                <th className="text-left py-2 px-3 hidden md:table-cell">Found By</th>
+                <th className="text-left py-2 px-3">Reward</th>
+                <th className="text-left py-2 px-3">Status</th>
+                <th className="text-left py-2 px-3 hidden md:table-cell">Time</th>
               </tr>
             </thead>
             <tbody>
               {stats.recentBlocks.map((block) => (
-                <tr key={block.id} className="border-b border-gray-700/50">
-                  <td className="py-2">{block.height}</td>
-                  <td className="py-2 font-mono text-xs">
+                <tr key={block.id}>
+                  <td className="py-2 px-3 font-bold">{block.height}</td>
+                  <td className="py-2 px-3 font-mono text-xs">
                     {block.hash.slice(0, 10)}...
                   </td>
-                  <td className="py-2 hidden md:table-cell">
+                  <td className="py-2 px-3 hidden md:table-cell font-mono text-xs">
                     {block.foundByUser?.address.slice(0, 12)}...
                   </td>
-                  <td className="py-2 whitespace-nowrap">{formatTetsuo(block.reward)}</td>
-                  <td className="py-2">
+                  <td className="py-2 px-3 whitespace-nowrap font-bold">{formatTetsuo(block.reward)}</td>
+                  <td className="py-2 px-3">
                     <span
-                      className={`px-1.5 md:px-2 py-0.5 md:py-1 rounded text-xs ${
+                      className={`px-2 py-1 text-xs font-bold uppercase ${
                         block.status === "CONFIRMED"
-                          ? "bg-green-900 text-green-300"
+                          ? "badge-confirmed"
                           : block.status === "PENDING"
-                          ? "bg-yellow-900 text-yellow-300"
-                          : "bg-red-900 text-red-300"
+                          ? "badge-pending"
+                          : "badge-orphaned"
                       }`}
                     >
                       {block.status.slice(0, 4)}
                     </span>
                   </td>
-                  <td className="py-2 text-gray-400 hidden md:table-cell">
+                  <td className="py-2 px-3 text-[--text-muted] hidden md:table-cell">
                     {block.foundAt.toLocaleString()}
                   </td>
                 </tr>
               ))}
               {stats.recentBlocks.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="py-4 text-center text-gray-400">
+                  <td colSpan={6} className="py-4 text-center text-[--text-muted] uppercase">
                     No blocks found yet
                   </td>
                 </tr>
@@ -172,25 +172,25 @@ export default async function StatsPage() {
       </div>
 
       {/* Top Miners */}
-      <div className="bg-gray-800 rounded-lg p-4 md:p-6">
-        <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4">Top Miners</h2>
+      <div className="manga-card p-4 md:p-6">
+        <h2 className="text-lg md:text-xl font-black uppercase tracking-wide mb-3 md:mb-4">Top Miners</h2>
         <div className="overflow-x-auto">
-          <table className="w-full text-xs md:text-sm">
+          <table className="w-full text-xs md:text-sm manga-table">
             <thead>
-              <tr className="text-gray-400 border-b border-gray-700">
-                <th className="text-left py-2">#</th>
-                <th className="text-left py-2">Address</th>
-                <th className="text-left py-2">Pending</th>
-                <th className="text-left py-2 hidden md:table-cell">Total Paid</th>
+              <tr>
+                <th className="text-left py-2 px-3">#</th>
+                <th className="text-left py-2 px-3">Address</th>
+                <th className="text-left py-2 px-3">Pending</th>
+                <th className="text-left py-2 px-3 hidden md:table-cell">Total Paid</th>
               </tr>
             </thead>
             <tbody>
               {stats.topMiners.map((miner, i) => (
-                <tr key={miner.address} className="border-b border-gray-700/50">
-                  <td className="py-2">{i + 1}</td>
-                  <td className="py-2 font-mono text-xs">{miner.address.slice(0, 12)}...</td>
-                  <td className="py-2 whitespace-nowrap">{formatTetsuo(miner.pendingBalance)}</td>
-                  <td className="py-2 whitespace-nowrap hidden md:table-cell">{formatTetsuo(miner.paidBalance)}</td>
+                <tr key={miner.address}>
+                  <td className="py-2 px-3 font-black">{i + 1}</td>
+                  <td className="py-2 px-3 font-mono text-xs">{miner.address.slice(0, 12)}...</td>
+                  <td className="py-2 px-3 whitespace-nowrap font-bold">{formatTetsuo(miner.pendingBalance)}</td>
+                  <td className="py-2 px-3 whitespace-nowrap font-bold hidden md:table-cell">{formatTetsuo(miner.paidBalance)}</td>
                 </tr>
               ))}
             </tbody>

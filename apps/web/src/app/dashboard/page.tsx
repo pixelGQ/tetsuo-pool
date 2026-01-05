@@ -62,28 +62,28 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-4 md:space-y-6">
-      <h1 className="text-2xl md:text-3xl font-bold">Miner Dashboard</h1>
+      <h1 className="text-2xl md:text-3xl font-black uppercase tracking-tight">Miner Dashboard</h1>
 
       {/* Address Lookup */}
-      <div className="bg-gray-800 rounded-lg p-4 md:p-6">
+      <div className="manga-card p-4 md:p-6">
         <div className="flex flex-col md:flex-row gap-3 md:gap-4">
           <input
             type="text"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             placeholder="Enter your TETSUO address"
-            className="flex-1 px-3 md:px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500 text-sm md:text-base"
+            className="flex-1 px-3 md:px-4 py-2 bg-[--bg-secondary] border-2 border-[--border] focus:outline-none text-sm md:text-base font-bold"
             onKeyDown={(e) => e.key === "Enter" && lookupMiner()}
           />
           <button
             onClick={lookupMiner}
             disabled={loading}
-            className="px-4 md:px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg disabled:opacity-50 text-sm md:text-base"
+            className="manga-btn px-4 md:px-6 py-2 disabled:opacity-50 text-sm md:text-base"
           >
             {loading ? "Loading..." : "Lookup"}
           </button>
         </div>
-        {error && <p className="mt-2 text-red-400 text-sm">{error}</p>}
+        {error && <p className="mt-2 text-[--text-muted] text-sm font-bold">{error}</p>}
       </div>
 
       {/* Miner Stats */}
@@ -91,59 +91,59 @@ export default function DashboardPage() {
         <>
           {/* Overview */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-            <div className="bg-gray-800 rounded-lg p-4 md:p-6">
-              <div className="text-gray-400 text-xs md:text-sm">Your Hashrate</div>
-              <div className="text-lg md:text-2xl font-bold">{formatHashrate(stats.hashrate)}</div>
+            <div className="manga-card p-4 md:p-6">
+              <div className="text-[--text-muted] text-xs md:text-sm uppercase tracking-wide">Your Hashrate</div>
+              <div className="stat-number mt-1">{formatHashrate(stats.hashrate)}</div>
             </div>
-            <div className="bg-gray-800 rounded-lg p-4 md:p-6">
-              <div className="text-gray-400 text-xs md:text-sm">Pending</div>
-              <div className="text-lg md:text-2xl font-bold">{formatTetsuo(stats.pendingBalance)}</div>
+            <div className="manga-card p-4 md:p-6">
+              <div className="text-[--text-muted] text-xs md:text-sm uppercase tracking-wide">Pending</div>
+              <div className="stat-number mt-1">{formatTetsuo(stats.pendingBalance)}</div>
             </div>
-            <div className="bg-gray-800 rounded-lg p-4 md:p-6">
-              <div className="text-gray-400 text-xs md:text-sm">Total Paid</div>
-              <div className="text-lg md:text-2xl font-bold">{formatTetsuo(stats.paidBalance)}</div>
+            <div className="manga-card p-4 md:p-6">
+              <div className="text-[--text-muted] text-xs md:text-sm uppercase tracking-wide">Total Paid</div>
+              <div className="stat-number mt-1">{formatTetsuo(stats.paidBalance)}</div>
             </div>
-            <div className="bg-gray-800 rounded-lg p-4 md:p-6">
-              <div className="text-gray-400 text-xs md:text-sm">Blocks Found</div>
-              <div className="text-lg md:text-2xl font-bold">{stats.blocksFound}</div>
+            <div className="manga-card p-4 md:p-6">
+              <div className="text-[--text-muted] text-xs md:text-sm uppercase tracking-wide">Blocks Found</div>
+              <div className="stat-number mt-1">{stats.blocksFound}</div>
             </div>
           </div>
 
           {/* Workers */}
-          <div className="bg-gray-800 rounded-lg p-4 md:p-6">
-            <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4">Your Workers</h2>
+          <div className="manga-card p-4 md:p-6">
+            <h2 className="text-lg md:text-xl font-black uppercase tracking-wide mb-3 md:mb-4">Your Workers</h2>
             <div className="overflow-x-auto">
-              <table className="w-full text-xs md:text-sm">
+              <table className="w-full text-xs md:text-sm manga-table">
                 <thead>
-                  <tr className="text-gray-400 border-b border-gray-700">
-                    <th className="text-left py-2">Worker</th>
-                    <th className="text-left py-2">Status</th>
-                    <th className="text-left py-2 hidden md:table-cell">Last Seen</th>
+                  <tr>
+                    <th className="text-left py-2 px-3">Worker</th>
+                    <th className="text-left py-2 px-3">Status</th>
+                    <th className="text-left py-2 px-3 hidden md:table-cell">Last Seen</th>
                   </tr>
                 </thead>
                 <tbody>
                   {stats.workers.map((worker) => (
-                    <tr key={worker.name} className="border-b border-gray-700/50">
-                      <td className="py-2">{worker.name}</td>
-                      <td className="py-2">
+                    <tr key={worker.name}>
+                      <td className="py-2 px-3 font-bold">{worker.name}</td>
+                      <td className="py-2 px-3">
                         <span
-                          className={`px-1.5 md:px-2 py-0.5 md:py-1 rounded text-xs ${
+                          className={`px-2 py-1 text-xs font-bold uppercase ${
                             worker.isOnline
-                              ? "bg-green-900 text-green-300"
-                              : "bg-gray-700 text-gray-400"
+                              ? "badge-confirmed"
+                              : "badge-orphaned"
                           }`}
                         >
                           {worker.isOnline ? "Online" : "Offline"}
                         </span>
                       </td>
-                      <td className="py-2 text-gray-400 hidden md:table-cell">
+                      <td className="py-2 px-3 text-[--text-muted] hidden md:table-cell">
                         {new Date(worker.lastSeen).toLocaleString()}
                       </td>
                     </tr>
                   ))}
                   {stats.workers.length === 0 && (
                     <tr>
-                      <td colSpan={3} className="py-4 text-center text-gray-400">
+                      <td colSpan={3} className="py-4 text-center text-[--text-muted] uppercase font-bold">
                         No workers connected
                       </td>
                     </tr>
@@ -154,48 +154,48 @@ export default function DashboardPage() {
           </div>
 
           {/* Recent Payouts */}
-          <div className="bg-gray-800 rounded-lg p-4 md:p-6">
-            <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4">Recent Payouts</h2>
+          <div className="manga-card p-4 md:p-6">
+            <h2 className="text-lg md:text-xl font-black uppercase tracking-wide mb-3 md:mb-4">Recent Payouts</h2>
             <div className="overflow-x-auto">
-              <table className="w-full text-xs md:text-sm">
+              <table className="w-full text-xs md:text-sm manga-table">
                 <thead>
-                  <tr className="text-gray-400 border-b border-gray-700">
-                    <th className="text-left py-2">Amount</th>
-                    <th className="text-left py-2 hidden md:table-cell">TX ID</th>
-                    <th className="text-left py-2">Status</th>
-                    <th className="text-left py-2 hidden md:table-cell">Time</th>
+                  <tr>
+                    <th className="text-left py-2 px-3">Amount</th>
+                    <th className="text-left py-2 px-3 hidden md:table-cell">TX ID</th>
+                    <th className="text-left py-2 px-3">Status</th>
+                    <th className="text-left py-2 px-3 hidden md:table-cell">Time</th>
                   </tr>
                 </thead>
                 <tbody>
                   {stats.recentPayouts.map((payout, i) => (
-                    <tr key={i} className="border-b border-gray-700/50">
-                      <td className="py-2">{formatTetsuo(payout.amount)}</td>
-                      <td className="py-2 font-mono text-xs hidden md:table-cell">
+                    <tr key={i}>
+                      <td className="py-2 px-3 font-bold">{formatTetsuo(payout.amount)}</td>
+                      <td className="py-2 px-3 font-mono text-xs hidden md:table-cell">
                         {payout.txid ? `${payout.txid.slice(0, 12)}...` : "-"}
                       </td>
-                      <td className="py-2">
+                      <td className="py-2 px-3">
                         <span
-                          className={`px-1.5 md:px-2 py-0.5 md:py-1 rounded text-xs ${
+                          className={`px-2 py-1 text-xs font-bold uppercase ${
                             payout.status === "CONFIRMED"
-                              ? "bg-green-900 text-green-300"
+                              ? "badge-confirmed"
                               : payout.status === "SENT"
-                              ? "bg-blue-900 text-blue-300"
+                              ? "badge-pending"
                               : payout.status === "PENDING"
-                              ? "bg-yellow-900 text-yellow-300"
-                              : "bg-red-900 text-red-300"
+                              ? "badge-pending"
+                              : "badge-orphaned"
                           }`}
                         >
                           {payout.status}
                         </span>
                       </td>
-                      <td className="py-2 text-gray-400 hidden md:table-cell">
+                      <td className="py-2 px-3 text-[--text-muted] hidden md:table-cell">
                         {new Date(payout.createdAt).toLocaleString()}
                       </td>
                     </tr>
                   ))}
                   {stats.recentPayouts.length === 0 && (
                     <tr>
-                      <td colSpan={4} className="py-4 text-center text-gray-400">
+                      <td colSpan={4} className="py-4 text-center text-[--text-muted] uppercase font-bold">
                         No payouts yet
                       </td>
                     </tr>

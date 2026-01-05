@@ -63,43 +63,46 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-6 md:space-y-8">
-      <div className="text-center">
-        <h1 className="text-2xl md:text-4xl font-bold mb-2">TETSUO Mining Pool</h1>
-        <p className="text-gray-400 text-sm md:text-base">
-          Public PPLNS mining pool with {stats.poolFee}% fee
+      {/* Hero */}
+      <div className="text-center py-4">
+        <h1 className="text-3xl md:text-5xl font-black tracking-tight uppercase">
+          TETSUO Mining Pool
+        </h1>
+        <p className="text-[--text-muted] text-sm md:text-base mt-2 uppercase tracking-wide">
+          Public PPLNS Pool • {stats.poolFee}% Fee
         </p>
       </div>
 
       {/* Pool Stats */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
-        <div className="bg-gray-800 rounded-lg p-4 md:p-6">
-          <div className="text-gray-400 text-xs md:text-sm">Pool Hashrate</div>
-          <div className="text-lg md:text-2xl font-bold">{formatHashrate(stats.hashrate)}</div>
+        <div className="manga-card p-4 md:p-6">
+          <div className="text-[--text-muted] text-xs md:text-sm uppercase tracking-wide">Pool Hashrate</div>
+          <div className="stat-number mt-1">{formatHashrate(stats.hashrate)}</div>
         </div>
-        <div className="bg-gray-800 rounded-lg p-4 md:p-6">
-          <div className="text-gray-400 text-xs md:text-sm">Active Miners</div>
-          <div className="text-lg md:text-2xl font-bold">{stats.miners}</div>
+        <div className="manga-card p-4 md:p-6">
+          <div className="text-[--text-muted] text-xs md:text-sm uppercase tracking-wide">Active Miners</div>
+          <div className="stat-number mt-1">{stats.miners}</div>
         </div>
-        <div className="bg-gray-800 rounded-lg p-4 md:p-6">
-          <div className="text-gray-400 text-xs md:text-sm">Online Workers</div>
-          <div className="text-lg md:text-2xl font-bold">{stats.workers}</div>
+        <div className="manga-card p-4 md:p-6">
+          <div className="text-[--text-muted] text-xs md:text-sm uppercase tracking-wide">Online Workers</div>
+          <div className="stat-number mt-1">{stats.workers}</div>
         </div>
-        <div className="bg-gray-800 rounded-lg p-4 md:p-6">
-          <div className="text-gray-400 text-xs md:text-sm">Blocks Found</div>
-          <div className="text-lg md:text-2xl font-bold">{stats.blocks}</div>
+        <div className="manga-card p-4 md:p-6">
+          <div className="text-[--text-muted] text-xs md:text-sm uppercase tracking-wide">Blocks Found</div>
+          <div className="stat-number mt-1">{stats.blocks}</div>
         </div>
-        <div className="bg-gray-800 rounded-lg p-4 md:p-6 col-span-2 md:col-span-1">
-          <div className="text-gray-400 text-xs md:text-sm">Mined (24h)</div>
-          <div className="text-lg md:text-2xl font-bold text-green-400">
+        <div className="manga-card p-4 md:p-6 col-span-2 md:col-span-1">
+          <div className="text-[--text-muted] text-xs md:text-sm uppercase tracking-wide">Mined (24h)</div>
+          <div className="stat-number mt-1">
             {Number(formatTetsuo(stats.minedLast24h, 0)).toLocaleString()}
           </div>
-          <div className="text-gray-500 text-xs">{stats.blocksFoundLast24h} blocks</div>
+          <div className="text-[--text-muted] text-xs">{stats.blocksFoundLast24h} blocks</div>
         </div>
       </div>
 
       {/* Hashrate Chart */}
-      <div className="bg-gray-800 rounded-lg p-4 md:p-6">
-        <h2 className="text-lg md:text-xl font-bold mb-4">Pool Hashrate (24h)</h2>
+      <div className="manga-card p-4 md:p-6">
+        <h2 className="text-lg md:text-xl font-black uppercase tracking-wide mb-4">Pool Hashrate (24h)</h2>
         <HashrateChart />
       </div>
 
@@ -107,32 +110,32 @@ export default async function HomePage() {
       <ConnectSection minPayout={stats.minPayout} />
 
       {/* Pool Info */}
-      <div className="bg-gray-800 rounded-lg p-4 md:p-6">
-        <h2 className="text-lg md:text-xl font-bold mb-4">Pool Information</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 text-xs md:text-sm">
-          <div>
-            <span className="text-gray-400">Algorithm:</span>
-            <span className="ml-1 md:ml-2">SHA-256</span>
+      <div className="manga-card p-4 md:p-6">
+        <h2 className="text-lg md:text-xl font-black uppercase tracking-wide mb-4">Pool Information</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 text-xs md:text-sm">
+          <div className="flex justify-between border-b border-[--border-light] pb-2">
+            <span className="text-[--text-muted] uppercase">Algorithm</span>
+            <span className="font-bold">SHA-256</span>
           </div>
-          <div>
-            <span className="text-gray-400">Pool Fee:</span>
-            <span className="ml-1 md:ml-2">{stats.poolFee}%</span>
+          <div className="flex justify-between border-b border-[--border-light] pb-2">
+            <span className="text-[--text-muted] uppercase">Pool Fee</span>
+            <span className="font-bold">{stats.poolFee}%</span>
           </div>
-          <div>
-            <span className="text-gray-400">Payout Model:</span>
-            <span className="ml-1 md:ml-2">PPLNS</span>
+          <div className="flex justify-between border-b border-[--border-light] pb-2">
+            <span className="text-[--text-muted] uppercase">Payout Model</span>
+            <span className="font-bold">PPLNS</span>
           </div>
-          <div>
-            <span className="text-gray-400">Min Payout:</span>
-            <span className="ml-1 md:ml-2">{stats.minPayout} TETSUO</span>
+          <div className="flex justify-between border-b border-[--border-light] pb-2">
+            <span className="text-[--text-muted] uppercase">Min Payout</span>
+            <span className="font-bold">{stats.minPayout} TETSUO</span>
           </div>
-          <div>
-            <span className="text-gray-400">Payout:</span>
-            <span className="ml-1 md:ml-2">Hourly</span>
+          <div className="flex justify-between border-b border-[--border-light] pb-2">
+            <span className="text-[--text-muted] uppercase">Payout</span>
+            <span className="font-bold">Automatic</span>
           </div>
-          <div>
-            <span className="text-gray-400">Block Time:</span>
-            <span className="ml-1 md:ml-2">60 sec</span>
+          <div className="flex justify-between border-b border-[--border-light] pb-2">
+            <span className="text-[--text-muted] uppercase">Block Time</span>
+            <span className="font-bold">60 sec</span>
           </div>
         </div>
       </div>
