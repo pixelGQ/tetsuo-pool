@@ -74,20 +74,21 @@
 
   /* Status badges */
   .badge-confirmed {
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
-    border: 2px solid var(--border);
+    background-color: #22C55E;
+    color: #000000;
+    border: 2px solid #000000;
   }
 
   .badge-pending {
-    background-color: var(--text-muted);
-    color: var(--bg-primary);
-    border: 2px solid var(--border);
+    background-color: #EAB308;
+    color: #000000;
+    border: 2px solid #000000;
   }
 
   .badge-orphaned {
-    background-color: var(--border);
-    color: var(--bg-primary);
+    background-color: #EF4444;
+    color: #FFFFFF;
+    border: 2px solid #000000;
   }
 
   /* Table styles */
