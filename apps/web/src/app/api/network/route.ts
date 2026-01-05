@@ -1,0 +1,41 @@
+import { NextResponse } from "next/server";
+import { createTetsuoRpc } from "@tetsuo-pool/tetsuo-rpc";
+import { POOL_CONFIG } from "@tetsuo-pool/shared";
+
+// Disable caching for this route
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+const rpc = createTetsuoRpc();
+
+export async function GET() {
+  try {
+    const [blockchainInfo, networkHashrate] = await Promise.all([
+      rpc.getBlockchainInfo(),
+      rpc.getNetworkHashPs(120), // 120 blocks average
+    ]);
+
+    return NextResponse.json(
+      {
+        blockHeight: blockchainInfo.blocks,
+        difficulty: blockchainInfo.difficulty,
+        networkHashrate: networkHashrate,
+        blockReward: POOL_CONFIG.blockReward,
+        chain: blockchainInfo.chain,
+        syncing: blockchainInfo.initialblockdownload,
+        headers: blockchainInfo.headers,
+      },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate",
+        },
+      }
+    );
+  } catch (error) {
+    console.error("Error fetching network stats:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch network stats. Node may be offline." },
+      { status: 500 }
+    );
+  }
+}

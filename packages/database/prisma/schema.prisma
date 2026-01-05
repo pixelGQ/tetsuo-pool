@@ -1,0 +1,221 @@
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../generated/client"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Users table - miners registered on the pool
+model User {
+  id             String    @id @default(cuid())
+  username       String
+  email          String?   @unique
+  passwordHash   String?
+
+  // Wallet address (used as unique identifier for miners)
+  address        String    @unique
+
+  // Balances (stored in satoshis/smallest unit)
+  pendingBalance BigInt    @default(0)  // Pending balance
+  paidBalance    BigInt    @default(0)  // Total paid out
+
+  // Settings
+  minPayout      BigInt    @default(10000000000) // 100 TETSUO in smallest unit
+  payoutEnabled  Boolean   @default(true)
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  // Relations
+  workers        Worker[]
+  shares         Share[]
+  payouts        Payout[]
+  blockRewards   BlockReward[]
+  blocksFound    Block[]   @relation("BlockFoundBy")
+
+  @@index([address])
+}
+
+// Workers - individual mining rigs per user
+model Worker {
+  id            String    @id @default(cuid())
+  userId        String
+  name          String    // e.g., "rig1", "worker_gpu"
+
+  // Stats
+  hashrate1m    BigInt    @default(0)  // 1 minute average
+  hashrate5m    BigInt    @default(0)  // 5 minute average
+  hashrate1h    BigInt    @default(0)  // 1 hour average
+  hashrate24h   BigInt    @default(0)  // 24 hour average
+
+  sharesValid   BigInt    @default(0)
+  sharesInvalid BigInt    @default(0)
+  sharesStale   BigInt    @default(0)
+
+  lastShare     DateTime?
+  lastSeen      DateTime?
+  isOnline      Boolean   @default(false)
+
+  difficulty    Float     @default(1)
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shares        Share[]
+  blocksFound   Block[]
+
+  @@unique([userId, name])
+  @@index([userId])
+  @@index([lastSeen])
+}
+
+// Shares - submitted work from miners
+model Share {
+  id            String    @id @default(cuid())
+  userId        String
+  workerId      String
+
+  // Share data
+  difficulty    BigInt
+  shareDifficulty BigInt  // Actual difficulty of the share
+  isValid       Boolean   @default(true)
+
+  // Timestamps
+  submittedAt   DateTime  @default(now())
+
+  // Block association (if this share found a block)
+  blockId       String?
+
+  // Relations
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  worker        Worker    @relation(fields: [workerId], references: [id], onDelete: Cascade)
+  block         Block?    @relation(fields: [blockId], references: [id])
+
+  @@index([userId, submittedAt])
+  @@index([workerId, submittedAt])
+  @@index([submittedAt])
+  @@index([blockId])
+}
+
+// Blocks - found by the pool
+model Block {
+  id              String    @id @default(cuid())
+
+  // Block data
+  height          Int       @unique
+  hash            String    @unique
+  difficulty      BigInt    @default(1)
+
+  // Reward info
+  reward          BigInt    // Block reward in smallest unit
+
+  // Finder info
+  foundByUserId   String?
+  foundByWorkerId String?
+
+  // Status
+  status          BlockStatus @default(PENDING)
+  confirmations   Int       @default(0)
+
+  // Timestamps
+  foundAt         DateTime  @default(now())
+
+  // Relations
+  foundByUser     User?     @relation("BlockFoundBy", fields: [foundByUserId], references: [id])
+  foundByWorker   Worker?   @relation(fields: [foundByWorkerId], references: [id])
+  shares          Share[]
+  rewards         BlockReward[]
+
+  @@index([status])
+  @@index([foundAt])
+}
+
+enum BlockStatus {
+  PENDING      // Waiting for confirmations
+  CONFIRMED    // 100+ confirmations, rewards distributed
+  ORPHANED     // Block was orphaned
+}
+
+// Block rewards - PPLNS distribution per block
+model BlockReward {
+  id            String    @id @default(cuid())
+  blockId       String
+  userId        String
+
+  // Reward calculation
+  sharePercent  Float     // User's percentage of shares
+  amount        BigInt    // Reward amount in smallest unit
+
+  createdAt     DateTime  @default(now())
+
+  // Relations
+  block         Block     @relation(fields: [blockId], references: [id], onDelete: Cascade)
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([blockId, userId])
+  @@index([userId])
+}
+
+// Payouts - withdrawals to miners
+model Payout {
+  id            String    @id @default(cuid())
+  userId        String
+
+  // Transaction data
+  amount        BigInt
+  fee           BigInt    @default(0)
+  address       String
+  txid          String?
+
+  // Status
+  status        PayoutStatus @default(PENDING)
+
+  // Timestamps
+  createdAt     DateTime  @default(now())
+  processedAt   DateTime?
+  confirmedAt   DateTime?
+
+  // Relations
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+enum PayoutStatus {
+  PENDING      // Queued for payout
+  PROCESSING   // Transaction being sent
+  SENT         // Transaction sent, awaiting confirmation
+  CONFIRMED    // Transaction confirmed
+  FAILED       // Transaction failed
+}
+
+// Pool statistics - aggregated stats for charts
+model PoolStats {
+  id            String    @id @default(cuid())
+
+  // Hashrate
+  hashrate      BigInt    // Pool hashrate in H/s
+  miners        Int       // Active miners
+  workers       Int       // Active workers
+
+  // Network
+  networkHashrate BigInt?
+  networkDifficulty Float?
+  blockHeight   Int?
+
+  // Pool stats
+  blocksFound   Int       @default(0)
+  sharesPer10m  BigInt    @default(0)
+
+  timestamp     DateTime  @default(now())
+
+  @@index([timestamp])
+}

@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Build outputs
+.next/
+out/
+build/
+dist/
+
+# Environment files (NEVER commit secrets)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Prisma generated client
+packages/database/generated/
+
+# Turbo
+.turbo/
+
+# Testing
+coverage/
+
+# Misc
+*.tsbuildinfo
+
+# Secrets (PM2 configs with passwords, production env)
+.env.production
+ecosystem.config.js
+**/ecosystem.config.js
+CLAUDE.md

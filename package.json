@@ -1,0 +1,23 @@
+{
+  "name": "tetsuo-pool",
+  "version": "0.1.0",
+  "private": true,
+  "description": "TETSUO Mining Pool - PPLNS",
+  "scripts": {
+    "dev": "npm run dev --workspace=apps/web",
+    "build": "npm run build --workspace=apps/web",
+    "start": "npm run start --workspace=apps/web",
+    "db:generate": "npm run generate --workspace=packages/database",
+    "db:push": "npm run push --workspace=packages/database",
+    "db:migrate": "npm run migrate --workspace=packages/database",
+    "workers:dev": "npm run dev --workspace=apps/workers",
+    "workers:build": "npm run build --workspace=apps/workers"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
