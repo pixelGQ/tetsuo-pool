@@ -15,11 +15,13 @@ function getRedis(): Redis {
 interface RateLimitConfig {
   limit: number;      // Max requests
   window: number;     // Time window in seconds
+  name: string;       // Endpoint name for separate rate limit tracking
 }
 
 const DEFAULT_CONFIG: RateLimitConfig = {
   limit: 60,          // 60 requests
   window: 60,         // per 60 seconds (1 minute)
+  name: "default",
 };
 
 /**
@@ -51,7 +53,7 @@ export async function checkRateLimit(
 ): Promise<NextResponse | null> {
   try {
     const ip = getClientIp(request);
-    const key = `ratelimit:${ip}`;
+    const key = `ratelimit:${config.name}:${ip}`;
 
     const client = getRedis();
 
@@ -101,11 +103,14 @@ export async function checkRateLimit(
  */
 export const RATE_LIMITS = {
   // General API - 60 req/min
-  default: { limit: 60, window: 60 },
+  default: { limit: 60, window: 60, name: "default" },
 
   // Stats endpoint (called frequently by homepage) - 120 req/min
-  stats: { limit: 120, window: 60 },
+  stats: { limit: 120, window: 60, name: "stats" },
 
   // Miner lookup - 60 req/min
-  miner: { limit: 60, window: 60 },
+  miner: { limit: 60, window: 60, name: "miner" },
+
+  // Network endpoint - 120 req/min (has polling)
+  network: { limit: 120, window: 60, name: "network" },
 };

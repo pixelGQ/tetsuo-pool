@@ -11,7 +11,7 @@ const rpc = createTetsuoRpc();
 
 export async function GET(request: NextRequest) {
   // Rate limiting
-  const rateLimited = await checkRateLimit(request, RATE_LIMITS.default);
+  const rateLimited = await checkRateLimit(request, RATE_LIMITS.network);
   if (rateLimited) return rateLimited;
   try {
     const [blockchainInfo, networkHashrate] = await Promise.all([
