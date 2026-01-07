@@ -106,6 +106,6 @@ export const RATE_LIMITS = {
   // Stats endpoint (called frequently by homepage) - 120 req/min
   stats: { limit: 120, window: 60 },
 
-  // Miner lookup - stricter to prevent enumeration - 30 req/min
-  miner: { limit: 30, window: 60 },
+  // Miner lookup - 60 req/min
+  miner: { limit: 60, window: 60 },
 };

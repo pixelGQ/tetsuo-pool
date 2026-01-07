@@ -10,6 +10,7 @@ interface NetworkStats {
   chain: string;
   syncing: boolean;
   headers: number;
+  avgBlockTime: number;
 }
 
 function formatHashrate(h: number): string {
@@ -140,7 +141,7 @@ export default function NetworkPage() {
           </div>
           <div className="flex justify-between border-b border-[--border-light] pb-2">
             <span className="text-[--text-muted] uppercase">Block Time</span>
-            <span className="font-bold">60 sec</span>
+            <span className="font-bold">{stats?.avgBlockTime ?? 60} sec</span>
           </div>
           <div className="flex justify-between border-b border-[--border-light] pb-2">
             <span className="text-[--text-muted] uppercase">Algorithm</span>
@@ -158,7 +159,7 @@ export default function NetworkPage() {
           </div>
           <div className="flex justify-between border-b border-[--border-light] pb-2">
             <span className="text-[--text-muted] uppercase">Daily</span>
-            <span className="font-bold">~1,440 blk</span>
+            <span className="font-bold">~{Math.round(86400 / (stats?.avgBlockTime ?? 60)).toLocaleString()} blk</span>
           </div>
         </div>
       </div>
@@ -172,6 +173,7 @@ export default function NetworkPage() {
         <EarningsCalculator
           networkHashrate={stats?.networkHashrate ?? 0}
           blockReward={stats?.blockReward ?? 10000}
+          avgBlockTime={stats?.avgBlockTime ?? 60}
         />
       </div>
     </div>
@@ -181,9 +183,11 @@ export default function NetworkPage() {
 function EarningsCalculator({
   networkHashrate,
   blockReward,
+  avgBlockTime,
 }: {
   networkHashrate: number;
   blockReward: number;
+  avgBlockTime: number;
 }) {
   const [hashrate, setHashrate] = useState("");
   const [unit, setUnit] = useState("TH/s");
@@ -198,7 +202,7 @@ function EarningsCalculator({
   };
 
   const userHashrate = parseFloat(hashrate || "0") * multipliers[unit];
-  const blocksPerDay = 1440;
+  const blocksPerDay = Math.round(86400 / avgBlockTime);
   const dailyReward = networkHashrate > 0
     ? (userHashrate / networkHashrate) * blocksPerDay * blockReward
     : 0;
